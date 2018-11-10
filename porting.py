@@ -85,6 +85,7 @@ circ_mv	float	流通市值（万元）
 '''
 def daily_basic(trade_date):
     return pro_api.daily_basic(trade_date = trade_date)
-data = daily_basic('20170711')
 
-print(data)
+if __name__ == '__main__':
+    data = daily_basic('20170711')
+    print(data)
