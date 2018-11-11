@@ -60,8 +60,8 @@ adj_factor	float	复权因子
 start_date	str	开始日期
 end_date	str	结束日期
 '''
-def adj_factor(ts_code):
-    return pro_api.adj_factor(ts_code = ts_code)
+def adj_factor(trade_date):
+    return pro_api.adj_factor(trade_date = trade_date)
 
 
 #get daily_basic
@@ -87,5 +87,5 @@ def daily_basic(trade_date):
     return pro_api.daily_basic(trade_date = trade_date)
 
 if __name__ == '__main__':
-    data = daily_basic('20170711')
+    data = adj_factor('20170711')
     print(data)
