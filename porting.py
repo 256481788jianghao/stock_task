@@ -32,8 +32,8 @@ cal_date	str	日历日期
 is_open	int	是否交易 0休市 1交易
 pretrade_date	str	上一个交易日
 '''
-def trade_cal():
-    return pro_api.trade_cal()
+def trade_cal(start_date='20160101'):
+    return pro_api.trade_cal(start_date = start_date)
 
 #get daily date
 '''
