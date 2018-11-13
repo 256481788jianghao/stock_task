@@ -28,13 +28,14 @@ try:
     '''
     
     print('start update daily')
-    trade_cal_db = rdb.read_trade_cal(sql_con)
-    trade_cal_open = trade_cal_db[(trade_cal_db.is_open == 1) & (trade_cal_db.cal_date <= end_date) & (trade_cal_db.cal_date >= start_date)]
+    #trade_cal_db = rdb.read_trade_cal(sql_con)
+    #trade_cal_open = trade_cal_db[(trade_cal_db.is_open == 1) & (trade_cal_db.cal_date <= end_date) & (trade_cal_db.cal_date >= start_date)]
     #print(trade_cal_open)
     trade_cal_need_update = None
     if rdb.is_table_exists(cursor,'daily'):
         print('append daily table')
-        data_db = rdb.read_daily_by_date(sql_con,start_date,end_date)
+        trade_cal_need_update = rdb.find_date_need_update(sql_con,start_date,end_date)
+        print(trade_cal_need_update)
         
     else:
         print('create daily table')
