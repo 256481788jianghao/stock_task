@@ -14,3 +14,8 @@ def table_info(cursor,table_name):
 def read_trade_cal(con):
     data = pd.read_sql_query('select * from trade_cal',con,index_col='index')
     return data
+
+def read_daily_by_date(con,sdate,edate):
+    sql_str = 'select * from daily where trade_date >= "'+sdate+'" and trade_date <= "'+edate+'"'
+    data = pd.read_sql_query(sql_str,con,index_col='index')
+    return data

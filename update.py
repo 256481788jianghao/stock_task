@@ -33,7 +33,9 @@ try:
     #print(trade_cal_open)
     trade_cal_need_update = None
     if rdb.is_table_exists(cursor,'daily'):
-        print('append daily table')       
+        print('append daily table')
+        data_db = rdb.read_daily_by_date(sql_con,start_date,end_date)
+        
     else:
         print('create daily table')
         trade_cal_need_update = trade_cal_open
