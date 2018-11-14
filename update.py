@@ -7,7 +7,7 @@ import datetime
 sql_con = sql.connect('stock.db')
 cursor = sql_con.cursor()
 
-start_date = '20181110'
+start_date = '20181101'
 end_date = '20181112'
 now_date = datetime.datetime.now().strftime('%Y%m%d')
 
@@ -43,26 +43,32 @@ try:
     #print(tables_info)
     
     print('start update daily')
-    #trade_cal_db = rdb.read_trade_cal(sql_con)
-    #trade_cal_open = trade_cal_db[(trade_cal_db.is_open == 1) & (trade_cal_db.cal_date <= end_date) & (trade_cal_db.cal_date >= start_date)]
-    #print(trade_cal_open)
     trade_cal_need_update = None
     if rdb.is_table_exists(cursor,'daily'):
         print('append daily table')
         trade_cal_need_update = rdb.find_date_need_update(sql_con,start_date,end_date)
+        print('need update:')
         print(trade_cal_need_update)
         
     else:
         print('create daily table')
+        trade_cal_db = rdb.read_trade_cal(sql_con)
+        trade_cal_open = trade_cal_db[(trade_cal_db.is_open == 1) & (trade_cal_db.cal_date <= end_date) & (trade_cal_db.cal_date >= start_date)]
+        #print(trade_cal_open)
         trade_cal_need_update = trade_cal_open
 
+    
     for item in trade_cal_need_update.cal_date:
+        print('update daily:'+str(item))
         data = pt.daily(item)
         if type(data) == pd.DataFrame and not data.empty:
             data.to_sql('daily',sql_con,if_exists='append')
+        else:
+            print('update daily:'+str(item)+' fail')
+    
             
 except Exception as e:
-    print(e)
+    print("ex:"+str(e))
 finally:
     print("end update")
     cursor.close()

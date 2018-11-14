@@ -25,6 +25,6 @@ def read_daily_by_date(con,sdate,edate):
     return data
 
 def find_date_need_update(con,sdate,edate):
-    sql_str='select cal_date from trade_cal'
-    data = pd.read_sql_query(sql_str,con,index_col='index')
+    sql_str='select cal_date from trade_cal where is_open = 1 and cal_date >="'+sdate+'" and cal_date <="'+edate+'" and cal_date not in (select trade_date from daily)'
+    data = pd.read_sql_query(sql_str,con)
     return data
