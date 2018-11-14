@@ -7,8 +7,8 @@ import datetime
 sql_con = sql.connect('stock.db')
 cursor = sql_con.cursor()
 
-start_date = '20181101'
-end_date = '20181112'
+start_date = '20181001'
+end_date = '20181113'
 now_date = datetime.datetime.now().strftime('%Y%m%d')
 
 tables_info = None
@@ -65,6 +65,20 @@ try:
             data.to_sql('daily',sql_con,if_exists='append')
         else:
             print('update daily:'+str(item)+' fail')
+
+        print('update daily_basic:'+str(item))
+        data_daily_basic = pt.daily_basic(item)
+        if type(data_daily_basic) == pd.DataFrame and not data_daily_basic.empty:
+            data_daily_basic.to_sql('daily_basic',sql_con,if_exists='append')
+        else:
+            print('update daily_basic:'+str(item)+' fail')
+
+        print('update adj_factor:'+str(item))
+        data_adj_factor = pt.adj_factor(item)
+        if type(data_adj_factor) == pd.DataFrame and not data_adj_factor.empty:
+            data_adj_factor.to_sql('adj_factor',sql_con,if_exists='append')
+        else:
+            print('update adj_factor:'+str(item)+' fail')
     
             
 except Exception as e:
