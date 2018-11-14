@@ -1,5 +1,9 @@
 import pandas as pd
 
+def read_tables_info(con):
+    data = pd.read_sql_query('select * from tables_info',con,index_col='index')
+    return data
+
 def is_table_exists(cursor,table_name):
     cursor.execute('select count(*)  from sqlite_master where type="table" and name="'+table_name+'"')
     values = cursor.fetchall()
