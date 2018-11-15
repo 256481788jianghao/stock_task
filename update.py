@@ -7,8 +7,8 @@ import datetime
 sql_con = sql.connect('stock.db')
 cursor = sql_con.cursor()
 
-start_date = '20181001'
-end_date = '20181113'
+start_date = '20180501'
+end_date = '20181114'
 now_date = datetime.datetime.now().strftime('%Y%m%d')
 
 tables_info = None
