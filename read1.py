@@ -5,6 +5,8 @@ import readdb as rdb
 import datetime
 import matplotlib.pyplot as plt
 
+pd.set_option('max_columns', 100)
+
 sql_con = sql.connect('stock.db')
 cursor = sql_con.cursor()
 
@@ -17,8 +19,9 @@ try:
     sql_str='select a.ts_code,a.trade_date,a.low,b.turnover_rate_f,b.free_share from daily a,daily_basic b \
              where a.ts_code = "'+ts_code+'"\
              and a.ts_code = b.ts_code and a.trade_date = b.trade_date'
-    
+    #sql_str = 'select * from daily'
     data_daily = pd.read_sql_query(sql_str,sql_con)
+    #print(data_daily)
     p_mean = []
     p_mean.append(1)
     def func(item):
