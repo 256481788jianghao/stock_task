@@ -4,11 +4,13 @@ import sqlite3 as sql
 import readdb as rdb
 import datetime
 
+pd.set_option('max_columns', 100)
+
 sql_con = sql.connect('stock.db')
 cursor = sql_con.cursor()
 
 start_date = '20170101'
-end_date = '20181115'
+end_date = '20181210'
 now_date = datetime.datetime.now().strftime('%Y%m%d')
 
 tables_info = None
@@ -61,17 +63,21 @@ try:
     for item in trade_cal_need_update.cal_date:
         print('update daily:'+str(item))
         data = pt.daily(item)
+        data = data.rename(columns = {'pct_chg':'pct_change'})
+        #print(data)
         if type(data) == pd.DataFrame and not data.empty:
             data.to_sql('daily',sql_con,if_exists='append')
         else:
             print('update daily:'+str(item)+' fail')
 
+        '''
         print('update daily_basic:'+str(item))
         data_daily_basic = pt.daily_basic(item)
         if type(data_daily_basic) == pd.DataFrame and not data_daily_basic.empty:
             data_daily_basic.to_sql('daily_basic',sql_con,if_exists='append')
         else:
             print('update daily_basic:'+str(item)+' fail')
+        '''
 
         print('update adj_factor:'+str(item))
         data_adj_factor = pt.adj_factor(item)
