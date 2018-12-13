@@ -16,7 +16,7 @@ now_date = datetime.datetime.now().strftime('%Y%m%d')
 
 def smrate(data,n):
     if len(data) < n:
-        return 0
+        return -10000
     else:
         subdata = data
         return (subdata.iloc[-1] - subdata.mean())/subdata.std()
@@ -49,7 +49,15 @@ try:
     smrate_with_other(data_sort,10)
     '''
     stock_basic_data = pd.read_sql_query('select * from stock_basic',sql_con)
-    print(rdb.read_daily_by_date_and_tscode(sql_con,'000001.SZ','20181201','20181210'))
+    daily_data = rdb.read_daily_by_date(sql_con,'20181127','20181210')
+    daily_group = daily_data.groupby(by='ts_code')
+    def func(item):
+        item = item.set_index('trade_date')
+        smrate_ans = smrate(item.vol,10)
+        return pd.Series({'smrate':smrate_ans})
+    ans = daily_group.apply(func)
+    print(ans)
+    #print(rdb.read_daily_by_date_and_tscode(sql_con,'000001.SZ','20181201','20181210'))
     
 except Exception as e:
     print("ex:"+str(e))
