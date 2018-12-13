@@ -27,22 +27,29 @@ def smrate_l(data_list,n):
     for i in range(0,data_len - n + 1):
         #print(data_list[i:i+n])
         ans_list.append(smrate(data_list[i:i+n],n))
-    return pd.DataFrame({'smrate':ans_list})
+    return pd.DataFrame({'smrate':ans_list/max(ans_list)})
 
 def smrate_with_other(data,n):
     smrate_list = smrate_l(data.vol,n)
     subdata = data[n-1:len(data)+1]
-    print(smrate_list.smrate)
-    print(subdata)
-    print(pd.concat([subdata,smrate_list],axis=1))
+    #print(smrate_list.smrate)
+    subdata.insert(0,'smrate',smrate_list.smrate.tolist())
+    subdata = subdata.set_index('trade_date')
+    subdata['close_p'] = subdata.close/max(subdata.close)
+    subdata.plot(y=['close_p','smrate'])
+    plt.show()
     
 try:
-    stock_basic_data = rdb.read_stock_basic_by_name(sql_con,'中信建投')
+    '''
+    stock_basic_data = rdb.read_stock_basic_by_name(sql_con,'万科A')
     ts_code = stock_basic_data.ts_code.iloc[0]
-    sql_str='select trade_date,vol from daily where ts_code="'+ts_code+'"'
+    sql_str='select trade_date,vol,close from daily where ts_code="'+ts_code+'"'
     data_daily = pd.read_sql_query(sql_str,sql_con)
     data_sort = data_daily.sort_values(by='trade_date')
-    smrate_with_other(data_sort,7)
+    smrate_with_other(data_sort,10)
+    '''
+    stock_basic_data = pd.read_sql_query('select * from stock_basic',sql_con)
+    print(rdb.read_daily_by_date_and_tscode(sql_con,'000001.SZ','20181201','20181210'))
     
 except Exception as e:
     print("ex:"+str(e))
