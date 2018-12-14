@@ -56,7 +56,10 @@ try:
         smrate_ans = smrate(item.vol,10)
         return pd.Series({'smrate':smrate_ans})
     ans = daily_group.apply(func)
-    print(ans)
+    ans2 = stock_basic_data.set_index('ts_code')
+    ans2['smrate'] = ans.smrate
+    print(ans2.sort_values(by='smrate'))
+    
     #print(rdb.read_daily_by_date_and_tscode(sql_con,'000001.SZ','20181201','20181210'))
     
 except Exception as e:
