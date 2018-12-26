@@ -24,6 +24,11 @@ def read_daily_by_date(con,sdate,edate):
     data = pd.read_sql_query(sql_str,con,index_col='index')
     return data
 
+def read_daily_basic_by_date(con,sdate,edate):
+    sql_str = 'select * from daily_basic where trade_date >= "'+sdate+'" and trade_date <= "'+edate+'"'
+    data = pd.read_sql_query(sql_str,con,index_col='index')
+    return data
+
 def read_daily_by_date_and_tscode(con,tscode,sdate,edate):
     sql_str = 'select * from daily where ts_code="'+tscode+'" and trade_date >= "'+sdate+'" and trade_date <= "'+edate+'"'
     data = pd.read_sql_query(sql_str,con,index_col='trade_date')
