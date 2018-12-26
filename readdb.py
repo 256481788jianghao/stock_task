@@ -30,7 +30,22 @@ def read_daily_by_date_and_tscode(con,tscode,sdate,edate):
     return data
 
 def find_date_need_update(con,sdate,edate):
+    sql_str='select cal_date from trade_cal where is_open = 1 and cal_date >="'+sdate+'" and cal_date <="'+edate+'" and (cal_date not in (select trade_date from daily) or cal_date not in (select trade_date from daily_basic))'
+    data = pd.read_sql_query(sql_str,con)
+    return data
+
+def find_date_need_update_daily(con,sdate,edate):
     sql_str='select cal_date from trade_cal where is_open = 1 and cal_date >="'+sdate+'" and cal_date <="'+edate+'" and cal_date not in (select trade_date from daily)'
+    data = pd.read_sql_query(sql_str,con)
+    return data
+
+def find_date_need_update_daily_basic(con,sdate,edate):
+    sql_str='select cal_date from trade_cal where is_open = 1 and cal_date >="'+sdate+'" and cal_date <="'+edate+'" and cal_date not in (select trade_date from daily_basic)'
+    data = pd.read_sql_query(sql_str,con)
+    return data
+
+def find_date_need_update_adj_factor(con,sdate,edate):
+    sql_str='select cal_date from trade_cal where is_open = 1 and cal_date >="'+sdate+'" and cal_date <="'+edate+'" and cal_date not in (select trade_date from adj_factor)'
     data = pd.read_sql_query(sql_str,con)
     return data
 

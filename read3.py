@@ -16,7 +16,7 @@ now_date = datetime.datetime.now().strftime('%Y%m%d')
     
 try:
     stock_basic_data = pd.read_sql_query('select * from stock_basic where list_date < 20180901',sql_con)
-    daily_data = rdb.read_daily_by_date(sql_con,'20180101','20181224')
+    daily_data = rdb.read_daily_by_date(sql_con,'20180101','20181225')
     daily_group = daily_data.groupby(by='ts_code')
     def func(item):
         #print(item)
