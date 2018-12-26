@@ -13,59 +13,31 @@ cursor = sql_con.cursor()
 start_date = '20181001'
 end_date = '20181113'
 now_date = datetime.datetime.now().strftime('%Y%m%d')
-
-def smrate(data,n):
-    if len(data) < n:
-        return -10000
-    else:
-        subdata = data
-        return (subdata.iloc[-1] - subdata.mean())/subdata.std()
-        
-def smrate_l(data_list,n):
-    data_len = len(data_list)
-    ans_list = []
-    for i in range(0,data_len - n + 1):
-        #print(data_list[i:i+n])
-        ans_list.append(smrate(data_list[i:i+n],n))
-    return pd.DataFrame({'smrate':ans_list/max(ans_list)})
-
-def smrate_with_other(data,n):
-    smrate_list = smrate_l(data.vol,n)
-    subdata = data[n-1:len(data)+1]
-    #print(smrate_list.smrate)
-    subdata.insert(0,'smrate',smrate_list.smrate.tolist())
-    subdata = subdata.set_index('trade_date')
-    subdata['close_p'] = subdata.close/max(subdata.close)
-    subdata.plot(y=['close_p','smrate'])
-    plt.show()
     
 try:
-    '''
-    stock_basic_data = rdb.read_stock_basic_by_name(sql_con,'万科A')
-    ts_code = stock_basic_data.ts_code.iloc[0]
-    sql_str='select trade_date,vol,close from daily where ts_code="'+ts_code+'"'
-    data_daily = pd.read_sql_query(sql_str,sql_con)
-    data_sort = data_daily.sort_values(by='trade_date')
-    smrate_with_other(data_sort,10)
-    '''
-    stock_basic_data = pd.read_sql_query('select * from stock_basic',sql_con)
-    daily_data = rdb.read_daily_by_date(sql_con,'20181210','20181221')
+    stock_basic_data = pd.read_sql_query('select * from stock_basic where list_date < 20180901',sql_con)
+    daily_data = rdb.read_daily_by_date(sql_con,'20180101','20181224')
     daily_group = daily_data.groupby(by='ts_code')
     def func(item):
-        if len(item) != 10:
-            print('err  '+str(len(item)))
-        item = item.set_index('trade_date')
         #print(item)
-        smrate_ans = smrate(item.vol,10)
-        return pd.Series({'smrate':smrate_ans})
+        sublist = item[item['pct_change'] > 2]
+        sublist2 = item[item['pct_change'] < -2]
+        item['rhp'] = (item.high - item.open)/item.open*100
+        item['rlp'] = (item.low - item.open)/item.open*100
+        sublist3 = item[item.rhp > 5]
+        sublist4 = item[item.rlp < -5]
+        return pd.Series({'rh5':len(sublist3),'rl5':len(sublist4),'b5':len(sublist),'rb5':len(sublist)/len(item)*100,'s5':len(sublist2),'b5s5':len(sublist)/(len(sublist2)+0.0001)*100})
     ans = daily_group.apply(func)
-    ans2 = stock_basic_data.set_index('ts_code')
-    ans2['smrate'] = ans.smrate
-    ans2_sort = ans2.sort_values(by='smrate')
-    print(ans2_sort[(ans2_sort.smrate > 0) & (ans2_sort.list_date < '20181114')])
-    
-    #print(rdb.read_daily_by_date_and_tscode(sql_con,'000001.SZ','20181201','20181210'))
-    
+    ans2 = stock_basic_data.set_index('ts_code').loc[:,['name','list_date']]
+    ans2['b5'] = ans.b5
+    ans2['rb5'] = ans.rb5
+    ans2['s5'] = ans.s5
+    ans2['b5s5'] = ans.b5s5
+    ans2['rh5'] = ans.rh5
+    ans2['rl5'] = ans.rl5
+    print(ans2[ans2.rb5 > 0].sort_values(by='b5'))
+    print(ans2.rh5.median())
+    print(ans2.rh5.mean())
 except Exception as e:
     print("ex:"+str(e))
 finally:
