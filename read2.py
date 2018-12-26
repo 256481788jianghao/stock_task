@@ -49,16 +49,20 @@ try:
     smrate_with_other(data_sort,10)
     '''
     stock_basic_data = pd.read_sql_query('select * from stock_basic',sql_con)
-    daily_data = rdb.read_daily_by_date(sql_con,'20181127','20181210')
+    daily_data = rdb.read_daily_by_date(sql_con,'20181210','20181221')
     daily_group = daily_data.groupby(by='ts_code')
     def func(item):
+        if len(item) != 10:
+            print('err  '+str(len(item)))
         item = item.set_index('trade_date')
+        #print(item)
         smrate_ans = smrate(item.vol,10)
         return pd.Series({'smrate':smrate_ans})
     ans = daily_group.apply(func)
     ans2 = stock_basic_data.set_index('ts_code')
     ans2['smrate'] = ans.smrate
-    print(ans2.sort_values(by='smrate'))
+    ans2_sort = ans2.sort_values(by='smrate')
+    print(ans2_sort[(ans2_sort.smrate > 0) & (ans2_sort.list_date < '20181114')])
     
     #print(rdb.read_daily_by_date_and_tscode(sql_con,'000001.SZ','20181201','20181210'))
     
