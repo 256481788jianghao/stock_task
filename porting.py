@@ -86,6 +86,20 @@ circ_mv	float	流通市值（万元）
 def daily_basic(trade_date):
     return pro_api.daily_basic(trade_date = trade_date)
 
+#get block_trade
+'''
+ts_code	str	Y	TS代码
+trade_date	str	Y	交易日历
+price	float	Y	成交价
+vol	float	Y	成交量（万股）
+amount	float	Y	成交金额
+buyer	str	Y	买方营业部
+seller	str	Y	卖房营业部
+'''
+def block_trade(trade_date):
+    return pro_api.block_trade(trade_date = trade_date)
+
+
 if __name__ == '__main__':
     data = adj_factor('20170711')
     print(data)

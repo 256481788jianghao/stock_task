@@ -51,6 +51,7 @@ try:
         trade_cal_need_update_daily = rdb.find_date_need_update_daily(sql_con,start_date,end_date)
         trade_cal_need_update_daily_basic = rdb.find_date_need_update_daily_basic(sql_con,start_date,end_date)
         trade_cal_need_update_adj_factor = rdb.find_date_need_update_adj_factor(sql_con,start_date,end_date)
+        trade_cal_need_update_block_trade = rdb.find_date_need_update_block_trade(sql_con,start_date,end_date)
         print('need update:')
         print(trade_cal_need_update)
         
@@ -62,6 +63,17 @@ try:
         trade_cal_need_update_daily = trade_cal_open
         trade_cal_need_update_daily_basic = trade_cal_open
         trade_cal_need_update_adj_factor = trade_cal_open
+        trade_cal_need_update_block_trade = trade_cal_open
+
+    for item in trade_cal_need_update_block_trade.cal_date:
+        print('update block_trade '+str(item))
+        data_block_trade = pt.block_trade(item)
+        if type(data_block_trade) == pd.DataFrame and not data_block_trade.empty:
+            data_block_trade.to_sql('block_trade',sql_con,if_exists='append')
+        elif data_block_trade.empty:
+            print('update block_trade empty '+str(item))
+        else:
+            print('update block_trade fail '+str(item))
 
     
     for item in trade_cal_need_update_daily.cal_date:
