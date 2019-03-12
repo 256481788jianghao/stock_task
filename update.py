@@ -3,6 +3,7 @@ import pandas as pd
 import sqlite3 as sql
 import readdb as rdb
 import datetime
+import time
 
 pd.set_option('max_columns', 100)
 
@@ -10,7 +11,7 @@ sql_con = sql.connect('stock.db')
 cursor = sql_con.cursor()
 
 start_date = '20170101'
-end_date = '20190119'
+end_date = '20190312'
 now_date = datetime.datetime.now().strftime('%Y%m%d')
 
 tables_info = None
@@ -65,7 +66,12 @@ try:
         trade_cal_need_update_adj_factor = trade_cal_open
         trade_cal_need_update_block_trade = trade_cal_open
 
-    for item in trade_cal_need_update_block_trade.cal_date:
+    block_trade_dates = [20181115]
+    if not trade_cal_need_update_block_trade.empty:
+        block_trade_dates = trade_cal_need_update_block_trade.cal_date
+
+    block_trade_index = 0
+    for item in block_trade_dates:
         print('update block_trade '+str(item))
         data_block_trade = pt.block_trade(item)
         if type(data_block_trade) == pd.DataFrame and not data_block_trade.empty:
@@ -74,6 +80,10 @@ try:
             print('update block_trade empty '+str(item))
         else:
             print('update block_trade fail '+str(item))
+        block_trade_index = block_trade_index + 1
+        if block_trade_index > 75:
+            block_trade_index = 0
+            time.sleep(61)
 
     
     for item in trade_cal_need_update_daily.cal_date:
