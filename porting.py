@@ -1,5 +1,4 @@
 import tushare as ts
-import pandas as pd
 
 
 ts.set_token("edd599506620c2fa4466f6ff765ff458d3dd894b136356c68b8baa32")

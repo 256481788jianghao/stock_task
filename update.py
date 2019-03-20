@@ -11,7 +11,7 @@ sql_con = sql.connect('stock.db')
 cursor = sql_con.cursor()
 
 start_date = '20170101'
-end_date = '20190312'
+end_date = '20190319'
 now_date = datetime.datetime.now().strftime('%Y%m%d')
 
 tables_info = None
@@ -46,7 +46,6 @@ try:
     #print(tables_info)
     
     print('start update daily')
-    trade_cal_need_update = None
     if rdb.is_table_exists(cursor,'daily'):
         print('append daily table')
         trade_cal_need_update_daily = rdb.find_date_need_update_daily(sql_con,start_date,end_date)
@@ -54,8 +53,6 @@ try:
         trade_cal_need_update_adj_factor = rdb.find_date_need_update_adj_factor(sql_con,start_date,end_date)
         trade_cal_need_update_block_trade = rdb.find_date_need_update_block_trade(sql_con,start_date,end_date)
         print('need update:')
-        print(trade_cal_need_update)
-        
     else:
         print('create daily table')
         trade_cal_db = rdb.read_trade_cal(sql_con)
