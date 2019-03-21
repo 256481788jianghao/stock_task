@@ -23,6 +23,8 @@ try:
         tables_info = pd.DataFrame()
         tables_info['stock_basic_info'] = [start_date]
         tables_info['trade_cal_info'] = [start_date]
+        tables_info['stock_company_info_sz'] = [start_date]
+        tables_info['stock_company_info_sh'] = [start_date]
 
     if tables_info['stock_basic_info'].iloc[0] != now_date:
         print('start update stock basic')
@@ -41,6 +43,24 @@ try:
             tables_info['trade_cal_info'] = [now_date]
         else:
             print('get trade_cal faild')
+            
+    if tables_info['stock_company_info_sz'].iloc[0] != now_date:
+        print('start update stock_company_info_sz')
+        data_stock_company_info_sz = pt.stock_company('szse')
+        if type(data_stock_company_info_sz) == pd.DataFrame:
+            data_stock_company_info_sz.to_sql('stock_company_info_sz',sql_con,if_exists='replace')
+            tables_info['stock_company_info_sz'] = [now_date]
+        else:
+            print('get stock_company_info_sz faild')
+            
+    if tables_info['stock_company_info_sh'].iloc[0] != now_date:
+        print('start update stock_company_info_sh')
+        data_stock_company_info_sh = pt.stock_company('sse')
+        if type(data_stock_company_info_sh) == pd.DataFrame:
+            data_stock_company_info_sh.to_sql('stock_company_info_sh',sql_con,if_exists='replace')
+            tables_info['stock_company_info_sh'] = [now_date]
+        else:
+            print('get stock_company_info_sh faild')
     
     tables_info.to_sql('tables_info',sql_con,if_exists='replace')
     #print(tables_info)
@@ -64,9 +84,9 @@ try:
         trade_cal_need_update_adj_factor = trade_cal_open
         trade_cal_need_update_block_trade = trade_cal_open
         trade_cal_need_update_stock_suspend = trade_cal_open
-
+    
     stock_suspend_dates = [20181115]
-    if not trade_cal_need_update_stock_suspend.empty:
+    if type(trade_cal_need_update_stock_suspend) == pd.DataFrame:
         stock_suspend_dates = trade_cal_need_update_stock_suspend.cal_date
         
     stock_suspend_index = 0
@@ -86,7 +106,7 @@ try:
             time.sleep(61)
     
     block_trade_dates = [20181115]
-    if not trade_cal_need_update_block_trade.empty:
+    if type(trade_cal_need_update_block_trade) == pd.DataFrame:
         block_trade_dates = trade_cal_need_update_block_trade.cal_date
 
     block_trade_index = 0

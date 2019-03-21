@@ -1,4 +1,5 @@
 import pandas as pd
+from _overlapped import NULL
 
 def read_tables_info(con):
     data = pd.read_sql_query('select * from tables_info',con,index_col='index')
@@ -60,7 +61,7 @@ def find_date_need_update_block_trade(con,sdate,edate):
         data = pd.read_sql_query(sql_str,con)
     except Exception as e:
         print("ex:"+str(e))
-        return pd.DataFrame()
+        return None
     return data
 
 def find_date_need_update_stock_suspend(con,sdate,edate):
@@ -69,7 +70,7 @@ def find_date_need_update_stock_suspend(con,sdate,edate):
         data = pd.read_sql_query(sql_str,con)
     except Exception as e:
         print("ex:"+str(e))
-        return pd.DataFrame()
+        return None
     return data
 
 def read_stock_basic_by_name(con,name):

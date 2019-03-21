@@ -111,6 +111,27 @@ reason_type    str    停牌原因类别
 def stock_suspend(trade_date):
     return pro_api.suspend(ts_code='', suspend_date=trade_date, resume_date='')
 
+'''
+ts_code    str    Y    股票代码
+exchange    str    Y    交易所代码 ，SSE上交所 SZSE深交所
+chairman    str    Y    法人代表
+manager    str    Y    总经理
+secretary    str    Y    董秘
+reg_capital    float    Y    注册资本
+setup_date    str    Y    注册日期
+province    str    Y    所在省份
+city    str    Y    所在城市
+introduction    str    N    公司介绍
+website    str    Y    公司主页
+email    str    Y    电子邮件
+office    str    N    办公室
+employees    int    Y    员工人数
+main_business    str    N    主要业务及产品
+business_scope    str    N    经营范围
+'''
+def stock_company(market_code):
+    return pro_api.stock_company(exchange=market_code,fields='ts_code,reg_capital,province,city,main_business,business_scope')
+
 if __name__ == '__main__':
-    data = stock_suspend('20170711')
+    data = stock_company('szse')
     print(data)
