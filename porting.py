@@ -1,5 +1,7 @@
 import tushare as ts
+import pandas as pd
 
+pd.set_option('max_columns', 100)
 
 ts.set_token("edd599506620c2fa4466f6ff765ff458d3dd894b136356c68b8baa32")
 pro_api = ts.pro_api()
@@ -98,7 +100,17 @@ seller	str	Y	卖房营业部
 def block_trade(trade_date):
     return pro_api.block_trade(trade_date = trade_date)
 
+'''
+ts_code    str    股票代码
+suspend_date    str    停牌日期
+resume_date    str    复牌日期
+ann_date    str    公告日期
+suspend_reason    str    停牌原因
+reason_type    str    停牌原因类别
+'''
+def stock_suspend(trade_date):
+    return pro_api.suspend(ts_code='', suspend_date=trade_date, resume_date='')
 
 if __name__ == '__main__':
-    data = adj_factor('20170711')
+    data = stock_suspend('20170711')
     print(data)

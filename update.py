@@ -11,7 +11,7 @@ sql_con = sql.connect('stock.db')
 cursor = sql_con.cursor()
 
 start_date = '20170101'
-end_date = '20190319'
+end_date = '20190320'
 now_date = datetime.datetime.now().strftime('%Y%m%d')
 
 tables_info = None
@@ -52,6 +52,7 @@ try:
         trade_cal_need_update_daily_basic = rdb.find_date_need_update_daily_basic(sql_con,start_date,end_date)
         trade_cal_need_update_adj_factor = rdb.find_date_need_update_adj_factor(sql_con,start_date,end_date)
         trade_cal_need_update_block_trade = rdb.find_date_need_update_block_trade(sql_con,start_date,end_date)
+        trade_cal_need_update_stock_suspend = rdb.find_date_need_update_stock_suspend(sql_con,start_date,end_date)
         print('need update:')
     else:
         print('create daily table')
@@ -62,7 +63,28 @@ try:
         trade_cal_need_update_daily_basic = trade_cal_open
         trade_cal_need_update_adj_factor = trade_cal_open
         trade_cal_need_update_block_trade = trade_cal_open
+        trade_cal_need_update_stock_suspend = trade_cal_open
 
+    stock_suspend_dates = [20181115]
+    if not trade_cal_need_update_stock_suspend.empty:
+        stock_suspend_dates = trade_cal_need_update_stock_suspend.cal_date
+        
+    stock_suspend_index = 0
+    for item in stock_suspend_dates:
+        print('update stock_suspend '+str(item))
+        data_stock_suspend = pt.stock_suspend(item)
+        if type(data_stock_suspend) == pd.DataFrame and not data_stock_suspend.empty:
+            data_stock_suspend.to_sql('stock_suspend',sql_con,if_exists='append')
+        elif data_stock_suspend.empty:
+            print('update stock_suspend empty '+str(item))
+        else:
+            print('update stock_suspend fail '+str(item))
+        stock_suspend_index = stock_suspend_index + 1
+        if stock_suspend_index > 75:
+            print('stock_suspend wait for time')
+            stock_suspend_index = 0
+            time.sleep(61)
+    
     block_trade_dates = [20181115]
     if not trade_cal_need_update_block_trade.empty:
         block_trade_dates = trade_cal_need_update_block_trade.cal_date
@@ -79,6 +101,7 @@ try:
             print('update block_trade fail '+str(item))
         block_trade_index = block_trade_index + 1
         if block_trade_index > 75:
+            print('block_trade wait for time')
             block_trade_index = 0
             time.sleep(61)
 
