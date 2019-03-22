@@ -132,6 +132,19 @@ business_scope    str    N    经营范围
 def stock_company(market_code):
     return pro_api.stock_company(exchange=market_code,fields='ts_code,reg_capital,province,city,main_business,business_scope')
 
+'''
+trade_date    str    Y    交易日期
+ts_code    str    Y    TS代码
+exalter    str    Y    营业部名称
+buy    float    Y    买入额（万）
+buy_rate    float    Y    买入占总成交比例
+sell    float    Y    卖出额（万）
+sell_rate    float    Y    卖出占总成交比例
+net_buy    float    Y    净成交额（万）
+'''
+def longhubang_list(trade_date):
+    return pro_api.top_inst(trade_date=trade_date)
+
 if __name__ == '__main__':
-    data = stock_company('szse')
+    data = longhubang_list(20190320)
     print(data)

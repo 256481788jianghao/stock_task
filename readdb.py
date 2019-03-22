@@ -73,6 +73,15 @@ def find_date_need_update_stock_suspend(con,sdate,edate):
         return None
     return data
 
+def find_date_need_update_longhubang_list(con,sdate,edate):
+    try:
+        sql_str='select cal_date from trade_cal where is_open = 1 and cal_date >="'+sdate+'" and cal_date <="'+edate+'" and cal_date not in (select trade_date from longhubang_list)'
+        data = pd.read_sql_query(sql_str,con)
+    except Exception as e:
+        print("ex:"+str(e))
+        return None
+    return data
+
 def read_stock_basic_by_name(con,name):
     sql_str='select * from stock_basic where name="'+name+'"'
     data = pd.read_sql_query(sql_str,con)

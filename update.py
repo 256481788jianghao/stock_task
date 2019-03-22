@@ -73,6 +73,7 @@ try:
         trade_cal_need_update_adj_factor = rdb.find_date_need_update_adj_factor(sql_con,start_date,end_date)
         trade_cal_need_update_block_trade = rdb.find_date_need_update_block_trade(sql_con,start_date,end_date)
         trade_cal_need_update_stock_suspend = rdb.find_date_need_update_stock_suspend(sql_con,start_date,end_date)
+        trade_cal_need_update_longhubang_list = rdb.find_date_need_update_longhubang_list(sql_con,start_date,end_date)
         print('need update:')
     else:
         print('create daily table')
@@ -84,6 +85,27 @@ try:
         trade_cal_need_update_adj_factor = trade_cal_open
         trade_cal_need_update_block_trade = trade_cal_open
         trade_cal_need_update_stock_suspend = trade_cal_open
+        trade_cal_need_update_longhubang_list = trade_cal_open
+    
+    longhubang_list_dates = [20181115]
+    if type(trade_cal_need_update_longhubang_list) == pd.DataFrame:
+        longhubang_list_dates = trade_cal_need_update_longhubang_list.cal_date
+        
+    longhubang_list_index = 0
+    for item in longhubang_list_dates:
+        print('update longhubang_list '+str(item))
+        data_longhubang_list = pt.longhubang_list(item)
+        if type(data_longhubang_list) == pd.DataFrame and not data_longhubang_list.empty:
+            data_longhubang_list.to_sql('longhubang_list',sql_con,if_exists='append')
+        elif data_longhubang_list.empty:
+            print('update longhubang_list empty '+str(item))
+        else:
+            print('update longhubang_list fail '+str(item))
+        longhubang_list_index = longhubang_list_index + 1
+        if longhubang_list_index > 55:
+            print('longhubang_list wait for time')
+            longhubang_list_index = 0
+            time.sleep(61)
     
     stock_suspend_dates = [20181115]
     if type(trade_cal_need_update_stock_suspend) == pd.DataFrame:
