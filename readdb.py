@@ -1,5 +1,5 @@
 import pandas as pd
-from _overlapped import NULL
+
 
 def read_tables_info(con):
     data = pd.read_sql_query('select * from tables_info',con,index_col='index')
