@@ -11,7 +11,7 @@ sql_con = sql.connect('stock.db')
 cursor = sql_con.cursor()
 
 start_date = '20170101'
-end_date = '20190321'
+end_date = '20190325'
 now_date = datetime.datetime.now().strftime('%Y%m%d')
 
 tables_info = None
@@ -25,6 +25,7 @@ try:
         tables_info['trade_cal_info'] = [start_date]
         tables_info['stock_company_info_sz'] = [start_date]
         tables_info['stock_company_info_sh'] = [start_date]
+        tables_info['concept_info'] = [start_date]
 
     if tables_info['stock_basic_info'].iloc[0] != now_date:
         print('start update stock basic')
@@ -61,6 +62,31 @@ try:
             tables_info['stock_company_info_sh'] = [now_date]
         else:
             print('get stock_company_info_sh faild')
+    
+    if tables_info['concept_info'].iloc[0] != now_date:
+        print('start update concept_info')
+        data_concept_info = pt.concept()
+        if type(data_concept_info) == pd.DataFrame:
+            data_concept_info.to_sql('concept_info',sql_con,if_exists='replace')
+            concept_detail_list = []
+            concept_detail_list_index = 0
+            for concept_id in data_concept_info.code:
+                item = pt.concept_detail(concept_id)
+                if type(item) == pd.DataFrame:
+                    print("update concept_detail id="+str(concept_id))
+                    concept_detail_list.append(item)
+                else:
+                    print("concept_detail failed id="+str(concept_id))
+                concept_detail_list_index = concept_detail_list_index + 1
+                if(concept_detail_list_index > 99):
+                    concept_detail_list_index = 0
+                    print("wait for concept_detail")
+                    time.sleep(61)
+            detail_data = pd.concat(concept_detail_list)
+            detail_data.to_sql('concept_detail',sql_con,if_exists='replace')       
+            tables_info['concept_info'] = [now_date]
+        else:
+            print('get concept_info faild')
     
     tables_info.to_sql('tables_info',sql_con,if_exists='replace')
     #print(tables_info)

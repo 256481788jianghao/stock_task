@@ -145,6 +145,24 @@ net_buy    float    Y    净成交额（万）
 def longhubang_list(trade_date):
     return pro_api.top_inst(trade_date=trade_date)
 
+'''
+code    str    Y    概念分类ID
+name    str    Y    概念分类名称
+src    str    Y    来源
+'''
+def concept(src='ts'):
+    return pro_api.concept(src=src)
+
+'''
+id    str    Y    概念代码
+ts_code    str    Y    股票代码
+name    str    Y    股票名称
+in_date    str    N    纳入日期
+out_date    str    N    剔除日期
+'''
+def concept_detail(Id):
+    return pro_api.concept_detail(id=Id)
+
 if __name__ == '__main__':
-    data = longhubang_list(20190320)
+    data = longhubang_list(20181214)
     print(data)
