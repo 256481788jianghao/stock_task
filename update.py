@@ -11,7 +11,7 @@ sql_con = sql.connect('stock.db')
 cursor = sql_con.cursor()
 
 start_date = '20170101'
-end_date = '20190325'
+end_date = '20190327'
 now_date = datetime.datetime.now().strftime('%Y%m%d')
 
 tables_info = None

@@ -2,11 +2,16 @@
 
 import wx
 import MainForm
+import LongHuConceptForm
 
 # Implementing MainForm
 class StockFormMainForm( MainForm.MainForm ):
 	def __init__( self, parent ):
 		MainForm.MainForm.__init__( self, parent )
+		
+	def m_menuItem_longhuConceptOnMenuSelection( self, event ):
+		Form = LongHuConceptForm.LongHuConceptForm(None)
+		Form.Show()
 
 if __name__ == '__main__':
 	App = wx.App(False)
