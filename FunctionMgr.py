@@ -28,10 +28,27 @@ class FunctionMgr:
             return pd.Series(tmp)
         ans = group.apply(func)
         return (ans)
+    '''
+            根据代码查询概念
+    '''
+    def GetConceptByCode(self,code):
+        name_data = pd.read_sql_query('select * from concept_info',self.sql_con)
+        detail_data = pd.read_sql_query('select * from concept_detail where ts_code = \''+str(code)+'\'', self.sql_con)
+        name_list = []
+        for item in detail_data.id:
+            subdata = name_data[name_data.code == item]
+            #print(subdata.name.iloc[0])
+            name_list.append(subdata.name.iloc[0])
+        #print(name_list)
+        detail_data['concept_name'] = name_list
+        return detail_data
+        
     
 if __name__ == '__main__':
     pd.set_option('max_columns', 100)
     with sql.connect('stock.db') as con:
         mgr = FunctionMgr(con)
-        data = mgr.GetTurnoverRateMeanSortList(20190301,20190329)
-        print(data.sort_values(by='mean_rate_f',ascending=False))
+        #data = mgr.GetTurnoverRateMeanSortList(20190301,20190329)
+        #data_sort = data.sort_values(by='mean_rate_f',ascending=False)
+        data = mgr.GetConceptByCode('300312.SZ')
+        print(data)
