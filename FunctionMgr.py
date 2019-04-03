@@ -43,12 +43,30 @@ class FunctionMgr:
         detail_data['concept_name'] = name_list
         return detail_data
         
+    '''
+           概念排名
+    '''
+    def GetConceptSortList(self,code_list):
+        ans_dict=dict()
+        for stock_code in code_list:
+            data = self.GetConceptByCode(stock_code)
+            if not data.empty:
+                for name in data.concept_name:
+                    if name in ans_dict.keys():
+                        ans_dict[name] = ans_dict[name] + 1
+                    else:
+                        ans_dict[name] = 1
+        ans_frame = pd.DataFrame()
+        ans_frame['name'] = ans_dict.keys()
+        ans_frame['value'] = ans_dict.values()
+        return ans_frame.sort_values(by='value',ascending=False)
+                    
     
 if __name__ == '__main__':
     pd.set_option('max_columns', 100)
     with sql.connect('stock.db') as con:
         mgr = FunctionMgr(con)
-        #data = mgr.GetTurnoverRateMeanSortList(20190301,20190329)
-        #data_sort = data.sort_values(by='mean_rate_f',ascending=False)
-        data = mgr.GetConceptByCode('300312.SZ')
-        print(data)
+        data = mgr.GetTurnoverRateMeanSortList(20190320,20190329)
+        data_sort = data.sort_values(by='mean_rate_f',ascending=False)
+        concept_data = mgr.GetConceptSortList(data_sort[0:101].index)
+        print(concept_data)
