@@ -86,14 +86,20 @@ class FunctionMgr:
         ans = group.apply(func)
         return ans
     '''
-           获取某时间段内某概念的平均涨幅和还手率
+            获取某时间段内的累计涨幅和换手率
     '''
-    def GetConceptMeanPChangeAndTurnoverRateList(self,concept_id,start_date,end_date):
-        concept_detail_all_data = pd.read_sql_query('select * from concept_detail where id = \''+str(concept_id)+'\'', self.sql_con)
-        concept_data = concept_detail_all_data[concept_detail_all_data.id == concept_id].set_index('ts_code')
+    def GetSumPChangeAndMeanTurnoverRateList(self,start_date,end_date):
         sum_pctchange_data = self.GetPctChangeSumList(start_date, end_date)
         mean_turnover_data = self.GetTurnoverRateMeanSortList(start_date, end_date)
         mean_data = pd.merge(left=sum_pctchange_data,right=mean_turnover_data,left_index=True,right_index=True)
+        return mean_data
+    '''
+           获取某时间段内某概念的平均涨幅和还手率
+    '''
+    def GetConceptSumPChangeAndMeanTurnoverRateList(self,concept_id,start_date,end_date):
+        concept_detail_all_data = pd.read_sql_query('select * from concept_detail where id = \''+str(concept_id)+'\'', self.sql_con)
+        concept_data = concept_detail_all_data[concept_detail_all_data.id == concept_id].set_index('ts_code')
+        mean_data = self.GetSumPChangeAndMeanTurnoverRateList(start_date, end_date)
         merge_data = pd.merge(left=mean_data,right=concept_data,left_index=True,right_index=True)
         #print(sum_pctchange_data)
         return merge_data
@@ -102,7 +108,7 @@ if __name__ == '__main__':
     pd.set_option('max_columns', 100)
     with sql.connect('stock.db') as con:
         mgr = FunctionMgr(con)
-        data_concept_mean = mgr.GetConceptMeanPChangeAndTurnoverRateList('TS2', 20190401, 20190403)
+        data_concept_mean = mgr.GetSumPChangeAndMeanTurnoverRateList( 20190101, 20190403)
         print(data_concept_mean.sort_values(by='sum_pct_change',ascending=False))
         #data = mgr.GetTurnoverRateMeanSortList(20190120,20190329)
         #data_sort = data.sort_values(by='mean_rate_f',ascending=False)
