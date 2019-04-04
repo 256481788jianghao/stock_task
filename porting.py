@@ -164,5 +164,5 @@ def concept_detail(Id):
     return pro_api.concept_detail(id=Id)
 
 if __name__ == '__main__':
-    data = longhubang_list(20181214)
-    print(data)
+    data = trade_cal()
+    print(data[data.cal_date > str(20190322)])

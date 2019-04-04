@@ -11,7 +11,7 @@ sql_con = sql.connect('stock.db')
 cursor = sql_con.cursor()
 
 start_date = '20170101'
-end_date = '201903401'
+end_date = '20190403'
 now_date = datetime.datetime.now().strftime('%Y%m%d')
 
 tables_info = None
@@ -101,6 +101,7 @@ try:
         trade_cal_need_update_stock_suspend = rdb.find_date_need_update_stock_suspend(sql_con,start_date,end_date)
         trade_cal_need_update_longhubang_list = rdb.find_date_need_update_longhubang_list(sql_con,start_date,end_date)
         print('need update:')
+        #print(trade_cal_need_update_daily)
     else:
         print('create daily table')
         trade_cal_db = rdb.read_trade_cal(sql_con)

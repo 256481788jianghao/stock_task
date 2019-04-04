@@ -65,16 +65,23 @@ class FunctionMgr:
     '''
     def GetDaily(self,start_date,end_date):
         data = pd.read_sql_query('select * from daily where trade_date >= '+str(start_date)+' and trade_date <= '+str(end_date),self.sql_con)
+        if data.empty:
+            print('GetDaily is empty ['+str(start_date)+'->'+str(end_date)+']')
         return data
     '''
            得到某时间段内平均日价格变化
     '''
-    def GetPctChangeMeanList(self,start_date,end_date):
+    def GetPctChangeSumList(self,start_date,end_date):
         data = self.GetDaily(start_date, end_date)
+        if data.empty:
+            print('GetPctChangeSumList data is empty')
         group = data.groupby(by='ts_code')
         def func(item):
             tmp = dict()
-            tmp['mean_pct_change'] = item['pct_change'].mean()
+            p_all = 1
+            for p in item['pct_change']:
+                p_all = p_all*(1+p/100)
+            tmp['sum_pct_change'] = (p_all-1)*100
             return pd.Series(tmp)
         ans = group.apply(func)
         return ans
@@ -84,18 +91,19 @@ class FunctionMgr:
     def GetConceptMeanPChangeAndTurnoverRateList(self,concept_id,start_date,end_date):
         concept_detail_all_data = pd.read_sql_query('select * from concept_detail where id = \''+str(concept_id)+'\'', self.sql_con)
         concept_data = concept_detail_all_data[concept_detail_all_data.id == concept_id].set_index('ts_code')
-        mean_pctchange_data = self.GetPctChangeMeanList(start_date, end_date)
+        sum_pctchange_data = self.GetPctChangeSumList(start_date, end_date)
         mean_turnover_data = self.GetTurnoverRateMeanSortList(start_date, end_date)
-        mean_data = pd.merge(left=mean_pctchange_data,right=mean_turnover_data,left_index=True,right_index=True)
+        mean_data = pd.merge(left=sum_pctchange_data,right=mean_turnover_data,left_index=True,right_index=True)
         merge_data = pd.merge(left=mean_data,right=concept_data,left_index=True,right_index=True)
+        #print(sum_pctchange_data)
         return merge_data
     
 if __name__ == '__main__':
     pd.set_option('max_columns', 100)
     with sql.connect('stock.db') as con:
         mgr = FunctionMgr(con)
-        data_concept_mean = mgr.GetConceptMeanPChangeAndTurnoverRateList('TS2', 20190201, 20190315)
-        print(data_concept_mean.sort_values(by='mean_pct_change',ascending=False))
+        data_concept_mean = mgr.GetConceptMeanPChangeAndTurnoverRateList('TS2', 20190401, 20190403)
+        print(data_concept_mean.sort_values(by='sum_pct_change',ascending=False))
         #data = mgr.GetTurnoverRateMeanSortList(20190120,20190329)
         #data_sort = data.sort_values(by='mean_rate_f',ascending=False)
         #concept_data = mgr.GetConceptSortList(data_sort[0:21].index)
