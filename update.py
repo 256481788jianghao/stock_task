@@ -11,7 +11,7 @@ sql_con = sql.connect('stock.db')
 cursor = sql_con.cursor()
 
 start_date = '20170101'
-end_date = '20190408'
+end_date = '20190819'
 now_date = datetime.datetime.now().strftime('%Y%m%d')
 
 tables_info = None
@@ -78,7 +78,7 @@ try:
                 else:
                     print("concept_detail failed id="+str(concept_id))
                 concept_detail_list_index = concept_detail_list_index + 1
-                if(concept_detail_list_index > 99):
+                if(concept_detail_list_index > 98):
                     concept_detail_list_index = 0
                     print("wait for concept_detail")
                     time.sleep(61)
