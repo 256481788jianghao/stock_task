@@ -14,25 +14,17 @@ start_date = '20181001'
 end_date = '20181113'
 now_date = datetime.datetime.now().strftime('%Y%m%d')
 try:
-    stock_basic_data = rdb.read_stock_basic_by_name(sql_con,'浙商证券')
-    ts_code = stock_basic_data.ts_code.iloc[0]
-    sql_str='select a.ts_code,a.trade_date,a.low,b.turnover_rate_f,b.free_share from daily a,daily_basic b \
-             where a.ts_code = "'+ts_code+'"\
-             and a.ts_code = b.ts_code and a.trade_date = b.trade_date'
-    #sql_str = 'select * from daily'
-    data_daily = pd.read_sql_query(sql_str,sql_con)
-    #print(data_daily)
-    p_mean = []
-    p_mean.append(1)
-    def func(item):
-        print(item.free_share)
-        p_mean.append(p_mean[-1]*(1-item.turnover_rate_f/100)+item.low*item.turnover_rate_f/100)
-    data_daily.apply(func,axis=1)
-    del p_mean[0]
-    data_daily['p_mean'] = p_mean
-    print(data_daily)
-    data_daily.plot(y=['low','p_mean'])
-    plt.show()
+    data =rdb.read_daily_basic_by_date(sql_con,'20190719','20190719')
+    datal5 = data[data.turnover_rate_f < 2]
+    data5 = data[(data.turnover_rate_f >= 2) & (data.turnover_rate_f < 5)]
+    data10 = data[(data.turnover_rate_f >= 5) & (data.turnover_rate_f < 20)]
+    data20 = data[(data.turnover_rate_f >= 20) & (data.turnover_rate_f < 30)]
+    data30 = data[(data.turnover_rate_f >= 30) ]
+    print('dl5 len:'+str(len(datal5))+' mean_circ:'+str(datal5.circ_mv.sum()/len(datal5)))
+    print('d5 len:'+str(len(data5))+' mean_circ:'+str(data5.circ_mv.sum()/len(data5)))
+    print('d10 len:'+str(len(data10))+' mean_circ:'+str(data10.circ_mv.sum()/len(data10)))
+    print('d20 len:'+str(len(data20))+' mean_circ:'+str(data20.circ_mv.sum()/len(data20)))
+    print('d30 len:'+str(len(data30))+' mean_circ:'+str(data30.circ_mv.sum()/len(data30)))
 except Exception as e:
     print("ex:"+str(e))
 finally:
