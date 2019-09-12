@@ -11,7 +11,7 @@ sql_con = sql.connect('stock.db')
 cursor = sql_con.cursor()
 
 start_date = '20170101'
-end_date = '20190901'
+end_date = '20190911'
 now_date = datetime.datetime.now().strftime('%Y%m%d')
 
 tables_info = None
@@ -100,6 +100,7 @@ try:
         trade_cal_need_update_block_trade = rdb.find_date_need_update_block_trade(sql_con,start_date,end_date)
         trade_cal_need_update_stock_suspend = rdb.find_date_need_update_stock_suspend(sql_con,start_date,end_date)
         trade_cal_need_update_longhubang_list = rdb.find_date_need_update_longhubang_list(sql_con,start_date,end_date)
+        trade_cal_need_update_money_flow = rdb.find_date_need_update_money_flow(sql_con,start_date,end_date)
         print('need update:')
         #print(trade_cal_need_update_daily)
     else:
@@ -200,6 +201,14 @@ try:
             data_adj_factor.to_sql('adj_factor',sql_con,if_exists='append')
         else:
             print('update adj_factor:'+str(item)+' fail')
+            
+    for item in trade_cal_need_update_money_flow.cal_date:
+        print('update money_flow:'+str(item))
+        data_money_flow = pt.moneyflow(item)
+        if type(data_money_flow) == pd.DataFrame and not data_money_flow.empty:
+            data_money_flow.to_sql('money_flow',sql_con,if_exists='append')
+        else:
+            print('update money_flow:'+str(item)+' fail')
     
             
 except Exception as e:
