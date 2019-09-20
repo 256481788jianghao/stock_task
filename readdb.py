@@ -95,4 +95,14 @@ def read_stock_basic_by_name(con,name):
     sql_str='select * from stock_basic where name="'+name+'"'
     data = pd.read_sql_query(sql_str,con)
     return data
+
+def read_ts_codes(con):
+    sql_str='select ts_code from stock_basic'
+    data = pd.read_sql_query(sql_str,con)
+    return data
+
+def is_in_report_db(con,ts_code,end_date,report_name):
+    sql_str='select count(*) from '+report_name+' where ts_code="'+ts_code+'"'+' and end_date="'+end_date+'"'
+    data = pd.read_sql_query(sql_str,con)
+    return data.iloc[0][0] != 0
     
