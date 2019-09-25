@@ -12,7 +12,7 @@ sql_con = sql.connect('stock.db')
 cursor = sql_con.cursor()
 
 start_date = '20170101'
-end_date = '20190919'
+end_date = '20190924'
 now_date = datetime.datetime.now().strftime('%Y%m%d')
 
 report_years = ['20171231']
