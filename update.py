@@ -12,10 +12,10 @@ sql_con = sql.connect('stock.db')
 cursor = sql_con.cursor()
 
 start_date = '20170101'
-end_date = '20190924'
+end_date = '20191021'
 now_date = datetime.datetime.now().strftime('%Y%m%d')
 
-report_years = ['20171231']
+report_years = ['20161231','20171231','20181231']
 
 tables_info = None
 
@@ -25,16 +25,21 @@ def UpdateReport(report_type,ts_code_list,report_end_date):
         report_index = 0
         for ts_code in ts_code_list:
             if rdb.is_in_report_db(sql_con, ts_code, report_end_date, report_type):
-                print(report_type+' '+ts_code+' '+report_end_date+' exsist')
+                #print(report_type+' '+ts_code+' '+report_end_date+' exsist')
+                pass
             else:
                 print(report_type+' '+ts_code+' '+report_end_date+' update')
                 data_report = NULL
-                if report_type == 'balance_report':
-                    data_report = pt.balance_report(ts_code, report_end_date)
-                elif report_type == 'income_report':
-                    data_report = pt.income_report(ts_code, report_end_date)
-                else:
-                    data_report = pt.cash_report(ts_code, report_end_date)
+                try:
+                    if report_type == 'balance_report':
+                        data_report = pt.balance_report(ts_code, report_end_date)
+                    elif report_type == 'income_report':
+                        data_report = pt.income_report(ts_code, report_end_date)
+                    else:
+                        data_report = pt.cash_report(ts_code, report_end_date)
+                except Exception as ex:
+                    print("exception at "+ts_code+" d:"+report_end_date+" t:"+report_type+" ex:"+str(ex))
+                    time.sleep(1)
                 if type(data_report) == pd.DataFrame and not data_report.empty:
                     data_report.to_sql(report_type,sql_con,if_exists='append')
                     report_index = report_index + 1
@@ -42,6 +47,8 @@ def UpdateReport(report_type,ts_code_list,report_end_date):
                         report_index = 0
                         print('wait for '+report_type)
                         time.sleep(61)
+                else:
+                    print("ts_code="+ts_code+" d:"+report_end_date+" t:"+report_type+" empty or not DateFrame")
     else:
         print(report_type+' not exsist')
         report_index = 0
@@ -67,7 +74,9 @@ try:
         print('check report need update:'+report_end_date)
         data_ts_codes = rdb.read_ts_codes(sql_con)
         
-        #UpdateReport('income_report',data_ts_codes.ts_code,report_end_date)
+        UpdateReport('income_report',data_ts_codes.ts_code,report_end_date)
+        UpdateReport('balance_report',data_ts_codes.ts_code,report_end_date)
+        UpdateReport('cash_report',data_ts_codes.ts_code,report_end_date)
         
         
     #exit()
