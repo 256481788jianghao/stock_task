@@ -91,6 +91,11 @@ def find_date_need_update_money_flow(con,sdate,edate):
         return None
     return data
 
+def read_stock_basic(con):
+    sql_str='select * from stock_basic'
+    data = pd.read_sql_query(sql_str,con,index_col='index')
+    return data
+
 def read_stock_basic_by_name(con,name):
     sql_str='select * from stock_basic where name="'+name+'"'
     data = pd.read_sql_query(sql_str,con)
