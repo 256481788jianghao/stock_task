@@ -25,6 +25,11 @@ def read_daily_by_date(con,sdate,edate):
     data = pd.read_sql_query(sql_str,con,index_col='index')
     return data
 
+def read_daily_by_tscode(con,tscode):
+    sql_str = 'select * from daily where ts_code="'+tscode+'"'
+    data = pd.read_sql_query(sql_str,con)
+    return data
+
 def read_daily_basic_by_date(con,sdate,edate):
     sql_str = 'select * from daily_basic where trade_date >= "'+sdate+'" and trade_date <= "'+edate+'"'
     data = pd.read_sql_query(sql_str,con,index_col='index')
@@ -35,6 +40,11 @@ def read_daily_by_date_and_tscode(con,tscode,sdate,edate):
     data = pd.read_sql_query(sql_str,con,index_col='trade_date')
     return data
 
+def read_daily_basic_by_tscode(con,tscode):
+    sql_str = 'select * from daily_basic where ts_code="'+tscode+'"'
+    data = pd.read_sql_query(sql_str,con,index_col='trade_date')
+    return data
+    
 def find_date_need_update(con,sdate,edate):
     sql_str='select cal_date from trade_cal where is_open = 1 and cal_date >="'+sdate+'" and cal_date <="'+edate+'" and (cal_date not in (select trade_date from daily) or cal_date not in (select trade_date from daily_basic))'
     data = pd.read_sql_query(sql_str,con)
@@ -89,6 +99,11 @@ def find_date_need_update_money_flow(con,sdate,edate):
     except Exception as e:
         print("ex:"+str(e))
         return None
+    return data
+
+def read_money_flow(con,tscode):
+    sql_str='select * from money_flow where ts_code="'+tscode+'"'
+    data = pd.read_sql_query(sql_str,con)
     return data
 
 def read_stock_basic(con):
