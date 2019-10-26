@@ -12,7 +12,7 @@ sql_con = sql.connect('stock.db')
 cursor = sql_con.cursor()
 
 start_date = '20170101'
-end_date = '20191024'
+end_date = '20191025'
 now_date = datetime.datetime.now().strftime('%Y%m%d')
 
 report_years = ['20161231','20171231','20181231']
@@ -165,6 +165,7 @@ try:
         trade_cal_need_update_stock_suspend = rdb.find_date_need_update_stock_suspend(sql_con,start_date,end_date)
         trade_cal_need_update_longhubang_list = rdb.find_date_need_update_longhubang_list(sql_con,start_date,end_date)
         trade_cal_need_update_money_flow = rdb.find_date_need_update_money_flow(sql_con,start_date,end_date)
+        trade_cal_need_update_stock_limit_price = rdb.find_date_need_update_stock_limit_price(sql_con,start_date,end_date)
         print('need update:')
         #print(trade_cal_need_update_daily)
     else:
@@ -239,6 +240,19 @@ try:
             block_trade_index = 0
             time.sleep(61)
 
+    stock_price_limit_index = 0
+    for item in trade_cal_need_update_stock_limit_price.cal_date:
+        print('update stock_price_limit:'+str(item))
+        data_stock_price_limit = pt.stock_price_limit(item)
+        if type(data_stock_price_limit) == pd.DataFrame and not data_stock_price_limit.empty:
+            data_stock_price_limit.to_sql('stock_price_limit',sql_con,if_exists='append')
+            stock_price_limit_index = stock_price_limit_index + 1
+            if stock_price_limit_index > 58:
+                print('stock_price_limit wait for time')
+                stock_price_limit_index = 0
+                time.sleep(61)
+        else:
+            print('update stock_price_limit:'+str(item)+' fail')
     
     for item in trade_cal_need_update_daily.cal_date:
         print('update daily:'+str(item))

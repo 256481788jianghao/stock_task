@@ -19,7 +19,7 @@ try:
         print(ts_code)
         money_flow_data = rdb.read_money_flow(sql_con, ts_code)
         daily_data = rdb.read_daily_by_tscode(sql_con, ts_code)
-        print(daily_data[daily_data.trade_date == '20170124'])
+        #print(daily_data[daily_data.trade_date == '20170124'])
         data_merge = money_flow_data.merge(daily_data,on='trade_date').set_index('trade_date')
         #data_all_amount = (data.buy_sm_amount+data.sell_sm_amount+data.buy_md_amount+data.sell_md_amount+data.buy_lg_amount+data.sell_lg_amount+data.buy_elg_amount+data.sell_elg_amount)
         #data_all_amount = (data.buy_sm_vol+data.buy_md_vol+data.buy_lg_vol+data.buy_elg_vol)

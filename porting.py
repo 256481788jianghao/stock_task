@@ -800,6 +800,35 @@ net_mf_amount    float    Y    净流入额（万元）
 def moneyflow(trade_date):
     return pro_api.moneyflow(trade_date = trade_date)
 
+'''
+trade_date    str    Y    交易日期
+ts_code    str    Y    股票代码
+name    str    Y    股票名称
+close    float    Y    收盘价
+pct_chg    float    Y    涨跌幅
+amp    float    Y    振幅
+fc_ratio    float    Y    封单金额/日成交金额
+fl_ratio    float    Y    封单手数/流通股本
+fd_amount    float    Y    封单金额
+first_time    str    Y    首次涨停时间
+last_time    str    Y    最后封板时间
+open_times    int    Y    打开次数
+strth    float    Y    涨跌停强度
+limit    str    Y    D跌停U涨停
+'''
+def price_limit_info(trade_date):
+    return pro_api.limit_list(trade_date = trade_date)
+
+'''
+trade_date    str    Y    交易日期
+ts_code    str    Y    TS股票代码
+pre_close    float    N    昨日收盘价
+up_limit    float    Y    涨停价
+down_limit    float    Y    跌停价
+'''
+def stock_price_limit(trade_date):
+    return pro_api.stk_limit(trade_date = trade_date)
+
 if __name__ == '__main__':
-    data = cash_report('000001.SZ','20171231')
+    data = stock_price_limit('20191024')
     print(data)
