@@ -42,7 +42,7 @@ def read_daily_by_date_and_tscode(con,tscode,sdate,edate):
 
 def read_daily_basic_by_tscode(con,tscode):
     sql_str = 'select * from daily_basic where ts_code="'+tscode+'"'
-    data = pd.read_sql_query(sql_str,con,index_col='trade_date')
+    data = pd.read_sql_query(sql_str,con)
     return data
     
 def find_date_need_update(con,sdate,edate):
@@ -110,6 +110,15 @@ def find_date_need_update_stock_limit_price(con,sdate,edate):
         return None
     return data
 
+def find_date_need_update_stk_holdernumber(con,sdate,edate):
+    try:
+        sql_str='select cal_date from trade_cal where cal_date >="'+'20190101'+'" and cal_date <="'+edate+'" and cal_date not in (select end_date from stk_holder_num)'
+        data = pd.read_sql_query(sql_str,con)
+    except Exception as e:
+        print("ex:"+str(e))
+        return None
+    return data
+
 def read_money_flow(con,tscode):
     sql_str='select * from money_flow where ts_code="'+tscode+'"'
     data = pd.read_sql_query(sql_str,con)
@@ -129,6 +138,17 @@ def read_ts_codes(con):
     sql_str='select ts_code from stock_basic'
     data = pd.read_sql_query(sql_str,con)
     return data
+def read_stk_holdernumber(con,end_date):
+    sql_str='select * from stk_holder_num where end_date <="'+end_date+'"'
+    data = pd.read_sql_query(sql_str,con)
+    def lam_fun(item):
+        if len(item) > 1:
+            sItem = item.sort_values(by='end_date',ascending=False)
+        else:
+            sItem = item
+        #print(sItem)
+        return sItem.iloc[0]
+    return data.groupby(by='ts_code').apply(lam_fun).set_index('index')
 
 readdb_income_report= pd.DataFrame()
 readdb_balance_report = pd.DataFrame()

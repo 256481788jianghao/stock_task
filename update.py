@@ -12,7 +12,7 @@ sql_con = sql.connect('stock.db')
 cursor = sql_con.cursor()
 
 start_date = '20170101'
-end_date = '20191025'
+end_date = '20191027'
 now_date = datetime.datetime.now().strftime('%Y%m%d')
 
 report_years = ['20161231','20171231','20181231']
@@ -70,16 +70,6 @@ def UpdateReport(report_type,ts_code_list,report_end_date):
                     time.sleep(61)
 
 try:
-    for report_end_date in report_years:
-        print('check report need update:'+report_end_date)
-        data_ts_codes = rdb.read_ts_codes(sql_con)
-        
-        UpdateReport('income_report',data_ts_codes.ts_code,report_end_date)
-        UpdateReport('balance_report',data_ts_codes.ts_code,report_end_date)
-        UpdateReport('cash_report',data_ts_codes.ts_code,report_end_date)
-        
-        
-    #exit()
 
     if rdb.is_table_exists(cursor,'tables_info'):
         tables_info = rdb.read_tables_info(sql_con)
@@ -90,6 +80,7 @@ try:
         tables_info['stock_company_info_sz'] = [start_date]
         tables_info['stock_company_info_sh'] = [start_date]
         tables_info['concept_info'] = [start_date]
+        tables_info['stk_holdernumber_info'] = [start_date]
 
     if tables_info['stock_basic_info'].iloc[0] != now_date:
         print('start update stock basic')
@@ -99,7 +90,7 @@ try:
             tables_info['stock_basic_info'] = [now_date]
         else:
             print('get stock_basic faild')
-
+    
     if tables_info['trade_cal_info'].iloc[0] != now_date:
         print('start update trade cal')
         data_trade_cal = pt.trade_cal()
@@ -151,6 +142,7 @@ try:
             tables_info['concept_info'] = [now_date]
         else:
             print('get concept_info faild')
+            
     
     tables_info.to_sql('tables_info',sql_con,if_exists='replace')
     #print(tables_info)
@@ -166,6 +158,7 @@ try:
         trade_cal_need_update_longhubang_list = rdb.find_date_need_update_longhubang_list(sql_con,start_date,end_date)
         trade_cal_need_update_money_flow = rdb.find_date_need_update_money_flow(sql_con,start_date,end_date)
         trade_cal_need_update_stock_limit_price = rdb.find_date_need_update_stock_limit_price(sql_con,start_date,end_date)
+        trade_cal_need_update_stk_holdernumber = rdb.find_date_need_update_stk_holdernumber(sql_con,start_date,end_date)
         print('need update:')
         #print(trade_cal_need_update_daily)
     else:
@@ -180,6 +173,20 @@ try:
         trade_cal_need_update_stock_suspend = trade_cal_open
         trade_cal_need_update_longhubang_list = trade_cal_open
     
+    stk_hn_index = 0
+    for item in trade_cal_need_update_stk_holdernumber.cal_date:
+        print('update stk_holdernumber at '+item)
+        data_stk_hn = pt.stk_holdernumber(item)
+        if type(data_stk_hn) == pd.DataFrame and not data_stk_hn.empty:
+            data_stk_hn.to_sql('stk_holder_num',sql_con,if_exists='append')
+        else:
+            print('stk_holder empty at '+item)
+        stk_hn_index = stk_hn_index + 1
+        if stk_hn_index > 98:
+            print('wait for update stk_hn')
+            time.sleep(60)
+            stk_hn_index = 0
+    exit()
     longhubang_list_dates = [20181115]
     if type(trade_cal_need_update_longhubang_list) == pd.DataFrame:
         longhubang_list_dates = trade_cal_need_update_longhubang_list.cal_date
@@ -287,7 +294,16 @@ try:
             data_money_flow.to_sql('money_flow',sql_con,if_exists='append')
         else:
             print('update money_flow:'+str(item)+' fail')
-    
+            
+            
+    exit()
+    for report_end_date in report_years:
+        print('check report need update:'+report_end_date)
+        data_ts_codes = rdb.read_ts_codes(sql_con)
+        
+        UpdateReport('income_report',data_ts_codes.ts_code,report_end_date)
+        UpdateReport('balance_report',data_ts_codes.ts_code,report_end_date)
+        UpdateReport('cash_report',data_ts_codes.ts_code,report_end_date)
             
 except Exception as e:
     print("ex:"+str(e))

@@ -829,6 +829,16 @@ down_limit    float    Y    跌停价
 def stock_price_limit(trade_date):
     return pro_api.stk_limit(trade_date = trade_date)
 
+'''
+ts_code    str    Y    TS股票代码
+ann_date    str    Y    公告日期
+end_date    str    Y    截止日期
+holder_num    int    Y    股东户数(户）
+'''
+def stk_holdernumber(enddate):
+    return pro_api.stk_holdernumber(enddate=enddate)
+
 if __name__ == '__main__':
-    data = stock_price_limit('20191024')
+    data = stock_basic()
+    data = data[data.ts_code == '300028.SZ']
     print(data)
