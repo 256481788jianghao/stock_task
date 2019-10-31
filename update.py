@@ -12,7 +12,7 @@ sql_con = sql.connect('stock.db')
 cursor = sql_con.cursor()
 
 start_date = '20170101'
-end_date = '20191027'
+end_date = '20191030'
 now_date = datetime.datetime.now().strftime('%Y%m%d')
 
 report_years = ['20161231','20171231','20181231']
@@ -186,7 +186,7 @@ try:
             print('wait for update stk_hn')
             time.sleep(60)
             stk_hn_index = 0
-    exit()
+    #exit()
     longhubang_list_dates = [20181115]
     if type(trade_cal_need_update_longhubang_list) == pd.DataFrame:
         longhubang_list_dates = trade_cal_need_update_longhubang_list.cal_date
@@ -296,7 +296,7 @@ try:
             print('update money_flow:'+str(item)+' fail')
             
             
-    exit()
+    #exit()
     for report_end_date in report_years:
         print('check report need update:'+report_end_date)
         data_ts_codes = rdb.read_ts_codes(sql_con)

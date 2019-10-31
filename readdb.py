@@ -1,5 +1,5 @@
 import pandas as pd
-
+import math
 
 def read_tables_info(con):
     data = pd.read_sql_query('select * from tables_info',con,index_col='index')
@@ -141,6 +141,8 @@ def read_ts_codes(con):
 def read_stk_holdernumber(con,end_date):
     sql_str='select * from stk_holder_num where end_date <="'+end_date+'"'
     data = pd.read_sql_query(sql_str,con)
+    #print(data[data.ts_code == '000037.SZ'])
+    data = data[[not math.isnan(x) for x in data.holder_num]]
     def lam_fun(item):
         if len(item) > 1:
             sItem = item.sort_values(by='end_date',ascending=False)

@@ -839,6 +839,5 @@ def stk_holdernumber(enddate):
     return pro_api.stk_holdernumber(enddate=enddate)
 
 if __name__ == '__main__':
-    data = stock_basic()
-    data = data[data.ts_code == '300028.SZ']
+    data = balance_report('603815.SH','20161231')
     print(data)
