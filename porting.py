@@ -840,6 +840,18 @@ holder_num    int    Y    股东户数(户）
 def stk_holdernumber(enddate):
     return pro_api.stk_holdernumber(enddate=enddate)
 
+'''
+code    str    Y    原始代码
+trade_date    str    Y    交易日期
+ts_code    str    Y    TS代码
+name    str    Y    股票名称
+vol    int    Y    持股数量(股)
+ratio    float    Y    持股占比（%）
+exchange    str    Y    类型：SH沪股通SZ深港通HK港股通
+'''
+def hk_hold(date):
+    return pro_api.hk_hold(trade_date=date)
+
 if __name__ == '__main__':
-    data = balance_report('603815.SH','20161231')
+    data = hk_hold('20191129')
     print(data)
