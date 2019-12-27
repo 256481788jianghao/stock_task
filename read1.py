@@ -10,7 +10,7 @@ pd.set_option('max_columns', 100)
 sql_con = sql.connect('stock.db')
 cursor = sql_con.cursor()
 
-start_date = '20191101'
+start_date = '20190301'
 end_date = '20191220'
 now_date = datetime.datetime.now().strftime('%Y%m%d')
 try:
@@ -25,12 +25,10 @@ try:
     data_hk_hold = rdb.read_hk_hold_by_date(sql_con, start_date, end_date)
     data_all = pd.merge(data_daily,data_hk_hold,on=['ts_code','trade_date'])
     data_all_select = data_all[data_all.name == '科大讯飞'].copy()
-    data_all_select['ratio_change'] = data_all_select.ratio.diff(1)
     print(data_all_select)
-    #plt.plot(data_all.trade_date,data_all.close)
-    plt.plot(data_all_select.trade_date,data_all_select.ratio,'-o')
+    plt.plot(data_all_select.trade_date,data_all_select.vol_y.rolling(window=10).mean(),'-o')
     plt.twinx()
-    plt.plot(data_all_select.trade_date,data_all_select.close,'-x')
+    plt.plot(data_all_select.trade_date,data_all_select.close.rolling(window=10).mean(),'-xr')
     plt.show()
     '''
     print(data_ans)
