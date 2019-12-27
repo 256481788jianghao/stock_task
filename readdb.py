@@ -36,6 +36,11 @@ def read_daily_basic_by_date(con,sdate,edate):
     data = pd.read_sql_query(sql_str,con,index_col='index')
     return data
 
+def read_margin_detail_by_date(con,sdate,edate):
+    sql_str = 'select * from margin_detail where trade_date >= "'+sdate+'" and trade_date <= "'+edate+'"'
+    data = pd.read_sql_query(sql_str,con,index_col='index')
+    return data
+
 def read_hk_hold_by_date(con,sdate,edate):
     sql_str = 'select * from hk_hold where trade_date >= "'+sdate+'" and trade_date <= "'+edate+'"'
     data = pd.read_sql_query(sql_str,con,index_col='index')
