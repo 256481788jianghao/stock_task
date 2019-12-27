@@ -1,5 +1,6 @@
 import pandas as pd
 import math
+import sqlite3 as sql
 
 def read_tables_info(con):
     data = pd.read_sql_query('select * from tables_info',con,index_col='index')
@@ -32,6 +33,11 @@ def read_daily_by_tscode(con,tscode):
 
 def read_daily_basic_by_date(con,sdate,edate):
     sql_str = 'select * from daily_basic where trade_date >= "'+sdate+'" and trade_date <= "'+edate+'"'
+    data = pd.read_sql_query(sql_str,con,index_col='index')
+    return data
+
+def read_hk_hold_by_date(con,sdate,edate):
+    sql_str = 'select * from hk_hold where trade_date >= "'+sdate+'" and trade_date <= "'+edate+'"'
     data = pd.read_sql_query(sql_str,con,index_col='index')
     return data
 
@@ -119,6 +125,24 @@ def find_date_need_update_stk_holdernumber(con,sdate,edate):
         return None
     return data
 
+def find_date_need_update_hk_hold(con,sdate,edate):
+    try:
+        sql_str='select cal_date from trade_cal where cal_date >="'+'20190101'+'" and cal_date <="'+edate+'" and cal_date not in (select trade_date from hk_hold)'
+        data = pd.read_sql_query(sql_str,con)
+    except Exception as e:
+        print("ex:"+str(e))
+        return None
+    return data
+
+def find_date_need_update_margin_detail(con,sdate,edate):
+    try:
+        sql_str='select cal_date from trade_cal where cal_date >="'+'20190101'+'" and cal_date <="'+edate+'" and cal_date not in (select trade_date from margin_detail)'
+        data = pd.read_sql_query(sql_str,con)
+    except Exception as e:
+        print("ex:"+str(e))
+        return None
+    return data
+
 def read_money_flow(con,tscode):
     sql_str='select * from money_flow where ts_code="'+tscode+'"'
     data = pd.read_sql_query(sql_str,con)
@@ -178,3 +202,10 @@ def is_in_report_db(con,ts_code,end_date,report_name):
         data = readdb_cashflow_report[(readdb_cashflow_report.ts_code == ts_code)&(readdb_cashflow_report.end_date == end_date)]
         return type(data) == pd.DataFrame and not data.empty
     
+if __name__ == '__main__':
+    sql_con = sql.connect('stock.db')
+    cursor = sql_con.cursor()
+    datas = find_date_need_update_hk_hold(sql_con,'20190101','20191225')
+    print(datas)
+    cursor.close()
+    sql_con.close()

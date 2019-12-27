@@ -12,7 +12,7 @@ sql_con = sql.connect('stock.db')
 cursor = sql_con.cursor()
 
 start_date = '20170101'
-end_date = '20191222'
+end_date = '20191225'
 now_date = datetime.datetime.now().strftime('%Y%m%d')
 
 report_years = ['20161231','20171231','20181231']
@@ -147,6 +147,7 @@ try:
     tables_info.to_sql('tables_info',sql_con,if_exists='replace')
     #print(tables_info)
     
+        
     print('start update daily')
     if rdb.is_table_exists(cursor,'daily'):
         print('append daily table')
@@ -159,6 +160,8 @@ try:
         trade_cal_need_update_money_flow = rdb.find_date_need_update_money_flow(sql_con,start_date,end_date)
         trade_cal_need_update_stock_limit_price = rdb.find_date_need_update_stock_limit_price(sql_con,start_date,end_date)
         trade_cal_need_update_stk_holdernumber = rdb.find_date_need_update_stk_holdernumber(sql_con,start_date,end_date)
+        trade_cal_need_update_hk_hold = rdb.find_date_need_update_hk_hold(sql_con,start_date,end_date)
+        trade_cal_need_update_margin_detail = rdb.find_date_need_update_margin_detail(sql_con,start_date,end_date)
         print('need update:')
         #print(trade_cal_need_update_daily)
     else:
@@ -172,6 +175,29 @@ try:
         trade_cal_need_update_block_trade = trade_cal_open
         trade_cal_need_update_stock_suspend = trade_cal_open
         trade_cal_need_update_longhubang_list = trade_cal_open
+    
+    margin_detail_index = 0
+    for item in trade_cal_need_update_margin_detail.cal_date:
+        print('update margin_detail at '+item)
+        data_margin_detail = pt.margin_detail(item)
+        if type(data_margin_detail) == pd.DataFrame and not data_margin_detail.empty:
+            data_margin_detail.to_sql('margin_detail',sql_con,if_exists='append')
+        else:
+            print('margin_detail empty at '+item)
+    
+    hk_hold_index=0
+    for item in trade_cal_need_update_hk_hold.cal_date:
+        print('update hk_hold at '+item)
+        data_hk_hold = pt.hk_hold(item)
+        if type(data_hk_hold) == pd.DataFrame and not data_hk_hold.empty:
+            data_hk_hold.to_sql('hk_hold',sql_con,if_exists='append')
+        else:
+            print('hk_hold empty at '+item)
+        hk_hold_index = hk_hold_index+1
+        if hk_hold_index > 90:
+            hk_hold_index = 0
+            print('wait for update hk_hold')
+            time.sleep(62)
     
     stk_hn_index = 0
     for item in trade_cal_need_update_stk_holdernumber.cal_date:

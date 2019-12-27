@@ -852,6 +852,22 @@ exchange    str    Y    类型：SH沪股通SZ深港通HK港股通
 def hk_hold(date):
     return pro_api.hk_hold(trade_date=date)
 
+'''
+trade_date    str    交易日期
+ts_code    str    TS股票代码
+name    str    股票名称 （20190910后有数据）
+rzye    float    融资余额(元)
+rqye    float    融券余额(元)
+rzmre    float    融资买入额(元)
+rqyl    float    融券余量（手）
+rzche    float    融资偿还额(元)
+rqchl    float    融券偿还量(手)
+rqmcl    float    融券卖出量(股,份,手)
+rzrqye    float    融资融券余额(元)
+'''
+def margin_detail(date):
+    return pro_api.margin_detail(trade_date = date)
+
 if __name__ == '__main__':
-    data = hk_hold('20191129')
+    data = margin_detail('20190102')
     print(data)
