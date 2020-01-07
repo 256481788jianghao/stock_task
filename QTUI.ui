@@ -17,13 +17,13 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>11</x>
-      <y>11</y>
+      <x>10</x>
+      <y>10</y>
       <width>267</width>
-      <height>531</height>
+      <height>451</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0">
+    <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0">
      <property name="sizeConstraint">
       <enum>QLayout::SetDefaultConstraint</enum>
      </property>
@@ -89,6 +89,51 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_filter">
+       <property name="text">
+        <string>筛选</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBox_kechuangban">
+       <property name="text">
+        <string>包含科创板</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>上市时间小于:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDateEdit" name="dateEdit_listdate">
+         <property name="dateTime">
+          <datetime>
+           <hour>0</hour>
+           <minute>0</minute>
+           <second>0</second>
+           <year>2020</year>
+           <month>1</month>
+           <day>1</day>
+          </datetime>
+         </property>
+         <property name="displayFormat">
+          <string>yyyy/MM/dd</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
     </layout>
    </widget>
   </widget>
@@ -143,8 +188,59 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>tableView_stockbasic</sender>
+   <signal>clicked(QModelIndex)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slot_StockBasicClick()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>253</x>
+     <y>252</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>401</x>
+     <y>253</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_kechuangban</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slot_KechuangbanClick()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>69</x>
+     <y>447</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>28</x>
+     <y>514</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_filter</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slot_filer_stockbasic()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>210</x>
+     <y>423</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>360</x>
+     <y>426</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>slot_UpdateDataBase()</slot>
+  <slot>slot_StockBasicClick()</slot>
+  <slot>slot_KechuangbanClick()</slot>
+  <slot>slot_filer_stockbasic()</slot>
  </slots>
 </ui>

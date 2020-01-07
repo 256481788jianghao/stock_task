@@ -18,9 +18,24 @@ class MainWidow(QtWidgets.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self._MakeStockBasicTableView()
+        self.hasKechuangban = True
     
     def testPrint(self):
         print('test')
+        
+    def slot_filer_stockbasic(self):
+        listdate = self.ui.dateEdit_listdate.text().replace('/','')
+        self.StockBasicModle.UpdateFilter(self.hasKechuangban, listdate)
+        
+    def slot_KechuangbanClick(self,checked):
+        if checked:
+            self.hasKechuangban = True
+        else:
+            self.hasKechuangban = False
+    
+    def slot_StockBasicClick(self,index):
+        print(index.column())
+        pass
     
     def slot_UpdateDataBase(self):
         def subfun():
