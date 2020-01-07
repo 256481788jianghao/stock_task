@@ -6,7 +6,10 @@ import datetime
 import time
 from _overlapped import NULL
 
-
+def StrToDate(str):
+    date = datetime.datetime.strptime(str,'%Y%m%d')
+    return date
+    
 def UpdateFunction(start_date,end_date):
     pd.set_option('max_columns', 100)
     
@@ -180,6 +183,9 @@ def UpdateFunction(start_date,end_date):
         
         margin_detail_index = 0
         for item in trade_cal_need_update_margin_detail.cal_date:
+            dateobj = StrToDate(str(item))
+            if dateobj.weekday() == 5 or dateobj.weekday() == 6:
+                continue
             print('update margin_detail at '+item)
             data_margin_detail = pt.margin_detail(item)
             if type(data_margin_detail) == pd.DataFrame and not data_margin_detail.empty:
@@ -189,6 +195,9 @@ def UpdateFunction(start_date,end_date):
         
         hk_hold_index=0
         for item in trade_cal_need_update_hk_hold.cal_date:
+            dateobj = StrToDate(str(item))
+            if dateobj.weekday() == 6:
+                continue
             print('update hk_hold at '+item)
             data_hk_hold = pt.hk_hold(item)
             if type(data_hk_hold) == pd.DataFrame and not data_hk_hold.empty:
@@ -203,6 +212,9 @@ def UpdateFunction(start_date,end_date):
         
         stk_hn_index = 0
         for item in trade_cal_need_update_stk_holdernumber.cal_date:
+            dateobj = StrToDate(str(item))
+            if dateobj.weekday() == 5 or dateobj.weekday() == 6:
+                continue
             print('update stk_holdernumber at '+item)
             data_stk_hn = pt.stk_holdernumber(item)
             if type(data_stk_hn) == pd.DataFrame and not data_stk_hn.empty:
@@ -341,4 +353,5 @@ def UpdateFunction(start_date,end_date):
         sql_con.close()
 
 if __name__ == '__main__':
-    UpdateFunction('20190101', '20191230')
+    #UpdateFunction('20190101', '20191230')
+    print(StrToDate('20200103').weekday())
