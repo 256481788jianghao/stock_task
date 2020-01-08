@@ -22,8 +22,20 @@ class MainWidow(QtWidgets.QMainWindow):
     
     def testPrint(self):
         print('test')
-        
+    def slot_reset_stockbasic(self):
+        self.ui.lineEdit_filer_industry.setText('')
+        self.ui.lineEdit_sharename_filter.setText('')
+        self.ui.checkBox_kechuangban.setChecked(True)
+        self.ui.comboBox_concept.setCurrentIndex(0)
+        self.StockBasicModle.ResetStockBasic()
+    
     def slot_filer_stockbasic(self):
+        patten_name = self.ui.lineEdit_sharename_filter.text()
+        self.StockBasicModle.FilterByName(patten_name)
+        patten_industry = self.ui.lineEdit_filer_industry.text()
+        self.StockBasicModle.FilterByIndustry(patten_industry)
+        patten_concept = self.ui.comboBox_concept.currentText()
+        self.StockBasicModle.FilterByConcept(patten_concept)
         listdate = self.ui.dateEdit_listdate.text().replace('/','')
         self.StockBasicModle.UpdateFilter(self.hasKechuangban, listdate)
         
@@ -34,8 +46,10 @@ class MainWidow(QtWidgets.QMainWindow):
             self.hasKechuangban = False
     
     def slot_StockBasicClick(self,index):
-        print(index.column())
-        pass
+        data = self.StockBasicModle.GetData(index.row())
+        #print(data['name'])
+        self.ui.lineEdit_cur_tscode.setText(data.ts_code)
+        self.ui.lineEdit_cur_name.setText(data['name'])
     
     def slot_UpdateDataBase(self):
         def subfun():
@@ -49,6 +63,7 @@ class MainWidow(QtWidgets.QMainWindow):
         
     def _MakeStockBasicTableView(self):
         self.StockBasicModle = StockBasicModle(self.ui.tableView_stockbasic)
+        self.StockBasicModle.Init_Concept_ComboBox(self.ui.comboBox_concept)
         
 
 if __name__ == '__main__':

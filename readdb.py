@@ -26,6 +26,16 @@ def read_daily_by_date(con,sdate,edate):
     data = pd.read_sql_query(sql_str,con,index_col='index')
     return data
 
+def read_concept_info(con):
+    sql_str = 'select * from concept_info'
+    data = pd.read_sql_query(sql_str,con,index_col='index')
+    return data
+
+def read_concept_detail(con):
+    sql_str = 'select * from concept_detail'
+    data = pd.read_sql_query(sql_str,con,index_col='index')
+    return data
+
 def read_daily_by_tscode(con,tscode):
     sql_str = 'select * from daily where ts_code="'+tscode+'"'
     data = pd.read_sql_query(sql_str,con)
