@@ -11,6 +11,7 @@ from update import UpdateFunction
 import threading
 
 from QTPg.StockBasicModle import StockBasicModle
+from QTPg.ChartView import ChartView
 
 class MainWidow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -18,6 +19,7 @@ class MainWidow(QtWidgets.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self._MakeStockBasicTableView()
+        self._MakeChartView()
         self.hasKechuangban = True
     
     def testPrint(self):
@@ -64,6 +66,13 @@ class MainWidow(QtWidgets.QMainWindow):
     def _MakeStockBasicTableView(self):
         self.StockBasicModle = StockBasicModle(self.ui.tableView_stockbasic)
         self.StockBasicModle.Init_Concept_ComboBox(self.ui.comboBox_concept)
+        
+    def _MakeChartView(self):
+        self.ChartView = ChartView(self.ui.widget_chartview)
+        list_x = [1,2,3,4,5,6,7]
+        list_y = [3,4,5,6,7,8,11]
+        self.ChartView.SetLineSeries(list_x, list_y,'测试线')
+        self.ChartView.Show()
         
 
 if __name__ == '__main__':

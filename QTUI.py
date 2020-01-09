@@ -13,7 +13,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(800, 600)
+        MainWindow.resize(1355, 600)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.layoutWidget = QtWidgets.QWidget(self.centralwidget)
@@ -108,9 +108,12 @@ class Ui_MainWindow(object):
         self.lineEdit_cur_name = QtWidgets.QLineEdit(self.layoutWidget1)
         self.lineEdit_cur_name.setObjectName("lineEdit_cur_name")
         self.horizontalLayout_4.addWidget(self.lineEdit_cur_name)
+        self.widget_chartview = QtWidgets.QWidget(self.centralwidget)
+        self.widget_chartview.setGeometry(QtCore.QRect(410, 60, 911, 391))
+        self.widget_chartview.setObjectName("widget_chartview")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 23))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1355, 23))
         self.menubar.setObjectName("menubar")
         self.menu__command = QtWidgets.QMenu(self.menubar)
         self.menu__command.setObjectName("menu__command")
