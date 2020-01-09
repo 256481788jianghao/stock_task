@@ -13,6 +13,10 @@ import threading
 from QTPg.StockBasicModle import StockBasicModle
 from QTPg.ChartView import ChartView
 
+import sqlite3 as sql
+import readdb as rdb
+import pandas as pd
+
 class MainWidow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
@@ -24,6 +28,19 @@ class MainWidow(QtWidgets.QMainWindow):
     
     def testPrint(self):
         print('test')
+        
+    def slot_cur_draw(self):
+        cur_start_time = self.ui.dateEdit_cur_start_time.text().replace('/','')
+        cur_end_time = self.ui.dateEdit_cur_end_time.text().replace('/','')
+        ts_code = self.ui.lineEdit_cur_tscode.text()
+        print('start:'+cur_start_time+' end:'+cur_end_time)
+        sql_con = sql.connect('stock.db')
+        data_daily = rdb.read_daily_by_date_and_tscode(sql_con, ts_code, cur_start_time, cur_end_time)
+        self.ChartView.SetLineSeriesData([data_daily.close])
+        print(data_daily)
+        sql_con.close()
+        self.ChartView.Show()
+    
     def slot_reset_stockbasic(self):
         self.ui.lineEdit_filer_industry.setText('')
         self.ui.lineEdit_sharename_filter.setText('')
@@ -69,10 +86,12 @@ class MainWidow(QtWidgets.QMainWindow):
         
     def _MakeChartView(self):
         self.ChartView = ChartView(self.ui.widget_chartview)
+        '''
         list_x = [1,2,3,4,5,6,7]
         list_y = [3,4,5,6,7,8,11]
         self.ChartView.SetLineSeries(list_x, list_y,'测试线')
         self.ChartView.Show()
+        '''
         
 
 if __name__ == '__main__':

@@ -30,6 +30,16 @@ class ChartView(object):
         self.chart.setTitle(chart_name)
         self.chart.createDefaultAxes()
         
+    def SetLineSeriesData(self,data_list,chart_name=''):
+        self.chart = QtChart.QChart()
+        for data_lines in data_list:
+            series = QtChart.QLineSeries()
+            for index in range(len(data_lines)):
+                series.append(index, data_lines[index])
+            self.chart.addSeries(series)
+        self.chart.setTitle(chart_name)
+        self.chart.createDefaultAxes()
+        
     def Show(self):
         self.chartView.setChart(self.chart)
         

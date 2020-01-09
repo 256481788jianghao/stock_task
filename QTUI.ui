@@ -185,40 +185,128 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>410</x>
-      <y>10</y>
-      <width>334</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_4">
-     <item>
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>当前选择:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="lineEdit_cur_tscode"/>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="lineEdit_cur_name"/>
-     </item>
-    </layout>
-   </widget>
    <widget class="QWidget" name="widget_chartview" native="true">
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>60</y>
+      <x>400</x>
+      <y>150</y>
       <width>911</width>
       <height>391</height>
      </rect>
     </property>
+   </widget>
+   <widget class="QGroupBox" name="groupBox">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>40</y>
+      <width>761</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>线选择</string>
+    </property>
+    <widget class="QCheckBox" name="checkBox_daily_line">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>20</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>日线</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkBox_hk_line">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>20</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>北上资金</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>10</y>
+      <width>763</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_8">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>当前选择:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEdit_cur_tscode"/>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEdit_cur_name"/>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_7">
+       <item>
+        <widget class="QLabel" name="label_6">
+         <property name="text">
+          <string>时间范围：</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDateEdit" name="dateEdit_cur_start_time">
+         <property name="displayFormat">
+          <string>yyyy/MM/dd</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDateEdit" name="dateEdit_cur_end_time">
+         <property name="dateTime">
+          <datetime>
+           <hour>0</hour>
+           <minute>0</minute>
+           <second>0</second>
+           <year>2020</year>
+           <month>1</month>
+           <day>1</day>
+          </datetime>
+         </property>
+         <property name="displayFormat">
+          <string>yyyy/MM/dd</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_cur_draw">
+       <property name="text">
+        <string>确定</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -295,8 +383,8 @@
    <slot>slot_KechuangbanClick()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>70</x>
-     <y>398</y>
+     <x>71</x>
+     <y>370</y>
     </hint>
     <hint type="destinationlabel">
      <x>28</x>
@@ -311,8 +399,8 @@
    <slot>slot_filer_stockbasic()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>211</x>
-     <y>347</y>
+     <x>212</x>
+     <y>319</y>
     </hint>
     <hint type="destinationlabel">
      <x>360</x>
@@ -327,12 +415,28 @@
    <slot>slot_reset_stockbasic()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>262</x>
-     <y>362</y>
+     <x>263</x>
+     <y>348</y>
     </hint>
     <hint type="destinationlabel">
      <x>435</x>
      <y>367</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_cur_draw</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slot_cur_draw()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1137</x>
+     <y>45</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1251</x>
+     <y>37</y>
     </hint>
    </hints>
   </connection>
@@ -343,5 +447,6 @@
   <slot>slot_KechuangbanClick()</slot>
   <slot>slot_filer_stockbasic()</slot>
   <slot>slot_reset_stockbasic()</slot>
+  <slot>slot_cur_draw()</slot>
  </slots>
 </ui>
