@@ -16,6 +16,11 @@ from QTPg.ChartView import ChartView
 import sqlite3 as sql
 import readdb as rdb
 import pandas as pd
+#import matplotlib
+#matplotlib.use('Qt5Agg')
+import matplotlib.pyplot as plt
+#import threading as thr
+from multiprocessing import Process
 
 class MainWidow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -33,13 +38,17 @@ class MainWidow(QtWidgets.QMainWindow):
         cur_start_time = self.ui.dateEdit_cur_start_time.text().replace('/','')
         cur_end_time = self.ui.dateEdit_cur_end_time.text().replace('/','')
         ts_code = self.ui.lineEdit_cur_tscode.text()
+        has_daily_line = self.ui.checkBox_daily_line.isChecked()
+        has_hk_line = self.ui.checkBox_hk_line.isChecked()
         print('start:'+cur_start_time+' end:'+cur_end_time)
+        
         sql_con = sql.connect('stock.db')
         data_daily = rdb.read_daily_by_date_and_tscode(sql_con, ts_code, cur_start_time, cur_end_time)
-        self.ChartView.SetLineSeriesData([data_daily.close])
+        self.ChartView.SetLineSeries(data_daily.index,data_daily.close)
         print(data_daily)
         sql_con.close()
         self.ChartView.Show()
+        
     
     def slot_reset_stockbasic(self):
         self.ui.lineEdit_filer_industry.setText('')

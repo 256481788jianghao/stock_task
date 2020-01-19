@@ -22,13 +22,20 @@ class ChartView(object):
         pass
     
     def SetLineSeries(self,data_x,data_y,chart_name=''):
-        series = QtChart.QLineSeries()
-        for index in range(len(data_x)):
-            series.append(data_x[index], data_y[index])
         self.chart = QtChart.QChart()
+        axisX = QtChart.QCategoryAxis()
+        axisX.setRange(-1,len(data_y)+1)
+        axisX.setStartValue(0)
+        for index in range(len(data_x)):
+            axisX.append(data_x[index],index)
+        axisX.setLabelsAngle(90)
+        series = QtChart.QLineSeries()
+        for index in range(len(data_y)):
+            series.append(index, data_y[index])
         self.chart.addSeries(series)
+        axisX.setLabelsPosition(QtChart.QCategoryAxis.AxisLabelsPositionOnValue)
+        self.chart.setAxisX(axisX,series)
         self.chart.setTitle(chart_name)
-        self.chart.createDefaultAxes()
         
     def SetLineSeriesData(self,data_list,chart_name=''):
         self.chart = QtChart.QChart()

@@ -130,6 +130,7 @@ class Ui_MainWindow(object):
         self.label_6.setObjectName("label_6")
         self.horizontalLayout_7.addWidget(self.label_6)
         self.dateEdit_cur_start_time = QtWidgets.QDateEdit(self.widget)
+        self.dateEdit_cur_start_time.setDateTime(QtCore.QDateTime(QtCore.QDate(2019, 1, 1), QtCore.QTime(0, 0, 0)))
         self.dateEdit_cur_start_time.setObjectName("dateEdit_cur_start_time")
         self.horizontalLayout_7.addWidget(self.dateEdit_cur_start_time)
         self.dateEdit_cur_end_time = QtWidgets.QDateEdit(self.widget)
