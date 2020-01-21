@@ -45,7 +45,7 @@ class MainWidow(QtWidgets.QMainWindow):
         sql_con = sql.connect('stock.db')
         data_daily = rdb.read_daily_by_date_and_tscode(sql_con, ts_code, cur_start_time, cur_end_time)
         self.ChartView.SetLineSeries(data_daily.index,data_daily.close)
-        print(data_daily)
+        #print(data_daily)
         sql_con.close()
         self.ChartView.Show()
         

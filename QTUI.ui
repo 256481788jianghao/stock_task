@@ -207,37 +207,51 @@
     <property name="title">
      <string>线选择</string>
     </property>
-    <widget class="QCheckBox" name="checkBox_daily_line">
+    <widget class="QWidget" name="">
      <property name="geometry">
       <rect>
-       <x>30</x>
+       <x>10</x>
        <y>20</y>
-       <width>71</width>
-       <height>16</height>
+       <width>121</width>
+       <height>40</height>
       </rect>
      </property>
-     <property name="text">
-      <string>日线</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="checkBox_hk_line">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>20</y>
-       <width>71</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>北上资金</string>
-     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Line1：</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QCheckBox" name="checkBox_daily_line">
+        <property name="text">
+         <string>日线收盘</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>Line2：</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QCheckBox" name="checkBox_hk_line">
+        <property name="text">
+         <string>北上资金</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>410</x>
@@ -281,7 +295,7 @@
            <minute>0</minute>
            <second>0</second>
            <year>2019</year>
-           <month>1</month>
+           <month>11</month>
            <day>1</day>
           </datetime>
          </property>
