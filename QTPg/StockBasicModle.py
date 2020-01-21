@@ -40,6 +40,19 @@ class StockBasicModle(object):
     def ResetStockBasic(self):
         self.subData = self.stock_basic_data
         
+        
+    def FilterByHk(self,startTime):
+        print('FilterByHk s='+startTime)
+        sql_con = sql.connect('stock.db')
+        data_hk = rdb.read_hk_hold_by_date(sql_con, startTime, startTime)
+        if type(data_hk) == pd.DataFrame and type(self.subData) == pd.DataFrame:
+            data_merge = pd.merge(left=data_hk,right=self.subData,on=['ts_code','name'])
+            self.subData = data_merge
+            print(self.subData)
+        else:
+            pass
+        sql_con.close()
+    
     def FilterByConcept(self,concept_name):
         print('FilterByConcept '+concept_name)
         if concept_name == 'all':
