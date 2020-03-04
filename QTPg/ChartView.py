@@ -15,9 +15,9 @@ class ChartView(object):
         self.chartView = QtChart.QChartView(baseWidget)
         self.chartView.setGeometry(0,0,baseWidget.width(),baseWidget.height())
         self.chartView.setRubberBand(QtChart.QChartView.HorizontalRubberBand)
-        self.chartView.rubberBandChanged.connect(self._rubberBandChangedFun)
+        self.chartView.rubberBandChanged.connect(self.slot_rubberBandChangedFun)
         #print(baseWidget.width())
-    def _rubberBandChangedFun(self,rubberBandRect, fromScenePoint, toScenePoint):
+    def slot_rubberBandChangedFun(self,rubberBandRect, fromScenePoint, toScenePoint):
         print(rubberBandRect)
         print(fromScenePoint)
         print(toScenePoint)

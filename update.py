@@ -353,5 +353,5 @@ def UpdateFunction(start_date,end_date):
         sql_con.close()
 
 if __name__ == '__main__':
-    #UpdateFunction('20190101', '20191230')
+    UpdateFunction('20170101', '20200209')
     print(StrToDate('20200103').weekday())
