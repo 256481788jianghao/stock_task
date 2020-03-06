@@ -138,7 +138,7 @@ def UpdateFunction(start_date,end_date):
                     else:
                         print("concept_detail failed id="+str(concept_id))
                     concept_detail_list_index = concept_detail_list_index + 1
-                    if(concept_detail_list_index > 98):
+                    if(concept_detail_list_index > 198):
                         concept_detail_list_index = 0
                         print("wait for concept_detail")
                         time.sleep(61)
@@ -347,11 +347,25 @@ def UpdateFunction(start_date,end_date):
                 
     except Exception as e:
         print("ex:"+str(e))
+        ex = Exception("需要重新尝试")
+        raise ex
     finally:
         print("end update")
         cursor.close()
         sql_con.close()
 
 if __name__ == '__main__':
-    UpdateFunction('20170101', '20200209')
+    loop = True
+    trycout = 1
+    while loop:
+        try:
+            print("trycout="+str(trycout))
+            UpdateFunction('20170101', '20200303')
+        except Exception as ex:
+            print("ex="+str(ex))
+            time.sleep(61)
+            trycout = trycout + 1
+        else:
+            loop = False
+            print("更新成功，结束")
     print(StrToDate('20200103').weekday())
