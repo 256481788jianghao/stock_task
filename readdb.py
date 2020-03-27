@@ -149,6 +149,33 @@ def find_date_need_update_hk_hold(con,sdate,edate):
         return None
     return data
 
+def find_date_need_update_fut_daily(con,sdate,edate):
+    try:
+        sql_str='select cal_date from trade_cal where is_open = 1 and cal_date >="'+'20190101'+'" and cal_date <="'+edate+'" and cal_date not in (select trade_date from fut_daily)'
+        data = pd.read_sql_query(sql_str,con)
+    except Exception as e:
+        print("ex:"+str(e))
+        return None
+    return data
+
+def find_date_need_update_fut_holding(con,sdate,edate):
+    try:
+        sql_str='select cal_date from trade_cal where is_open = 1 and cal_date >="'+'20190101'+'" and cal_date <="'+edate+'" and cal_date not in (select trade_date from fut_holding)'
+        data = pd.read_sql_query(sql_str,con)
+    except Exception as e:
+        print("ex:"+str(e))
+        return None
+    return data
+
+def find_date_need_update_fut_wsr(con,sdate,edate):
+    try:
+        sql_str='select cal_date from trade_cal where is_open = 1 and cal_date >="'+'20190101'+'" and cal_date <="'+edate+'" and cal_date not in (select trade_date from fut_wsr)'
+        data = pd.read_sql_query(sql_str,con)
+    except Exception as e:
+        print("ex:"+str(e))
+        return None
+    return data
+
 def find_date_need_update_margin_detail(con,sdate,edate):
     try:
         sql_str='select cal_date from trade_cal where cal_date >="'+'20190101'+'" and cal_date <="'+edate+'" and cal_date not in (select trade_date from margin_detail)'

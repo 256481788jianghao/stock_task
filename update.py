@@ -86,6 +86,20 @@ def UpdateFunction(start_date,end_date):
             tables_info['stock_company_info_sh'] = [start_date]
             tables_info['concept_info'] = [start_date]
             tables_info['stk_holdernumber_info'] = [start_date]
+            
+        
+        if tables_info['fut_basic_info'].iloc[0] != now_date:
+            data_fut_basic_list = []
+            for market_name in ['CFFEX','DCE','CZCE','SHFE','INE']:
+                print('start update fut basic '+market_name)
+                data_fut_basic = pt.fut_basic(market_name)
+                if type(data_fut_basic) == pd.DataFrame:
+                    data_fut_basic_list.append(data_fut_basic)
+                else:
+                    print('get fut_basic faild '+market_name)
+            data_fut_basic_all = pd.concat(data_fut_basic_list)
+            data_fut_basic_all.to_sql('fut_basic',sql_con,if_exists='replace')
+            tables_info['fut_basic_info'] = [now_date]
     
         if tables_info['stock_basic_info'].iloc[0] != now_date:
             print('start update stock basic')
@@ -167,6 +181,9 @@ def UpdateFunction(start_date,end_date):
             trade_cal_need_update_stk_holdernumber = rdb.find_date_need_update_stk_holdernumber(sql_con,start_date,end_date)
             trade_cal_need_update_hk_hold = rdb.find_date_need_update_hk_hold(sql_con,start_date,end_date)
             trade_cal_need_update_margin_detail = rdb.find_date_need_update_margin_detail(sql_con,start_date,end_date)
+            trade_cal_need_update_fut_daily = rdb.find_date_need_update_fut_daily(sql_con,start_date,end_date)
+            trade_cal_need_update_fut_holding = rdb.find_date_need_update_fut_holding(sql_con,start_date,end_date)
+            trade_cal_need_update_fut_wsr = rdb.find_date_need_update_fut_wsr(sql_con,start_date,end_date)
             print('need update:')
             #print(trade_cal_need_update_daily)
         else:
@@ -180,6 +197,31 @@ def UpdateFunction(start_date,end_date):
             trade_cal_need_update_block_trade = trade_cal_open
             trade_cal_need_update_stock_suspend = trade_cal_open
             trade_cal_need_update_longhubang_list = trade_cal_open
+        
+        fut_daily_index = 0
+        for temp_item in trade_cal_need_update_fut_daily.cal_date:
+            print('update fut_daily at '+temp_item)
+            data_fut_daily = pt.fut_daily(temp_item)
+            if type(data_fut_daily) == pd.DataFrame and not data_fut_daily.empty:
+                data_fut_daily.to_sql('fut_daily',sql_con,if_exists='append')
+            else:
+                print('fut_daily empty at '+temp_item)
+        
+        for temp_item in trade_cal_need_update_fut_holding.cal_date:
+            print('update fut_holding at '+temp_item)
+            data_fut_holding = pt.fut_holding(temp_item)
+            if type(data_fut_holding) == pd.DataFrame and not data_fut_holding.empty:
+                data_fut_holding.to_sql('fut_holding',sql_con,if_exists='append')
+            else:
+                print('fut_holding empty at '+temp_item)
+        
+        for temp_item in trade_cal_need_update_fut_wsr.cal_date:
+            print('update fut_wsr at '+temp_item)
+            data_fut_wsr = pt.fut_wsr(temp_item)
+            if type(data_fut_wsr) == pd.DataFrame and not data_fut_wsr.empty:
+                data_fut_wsr.to_sql('fut_wsr',sql_con,if_exists='append')
+            else:
+                print('fut_wsr empty at '+temp_item)
         
         margin_detail_index = 0
         for item in trade_cal_need_update_margin_detail.cal_date:
@@ -360,7 +402,7 @@ if __name__ == '__main__':
     while loop:
         try:
             print("trycout="+str(trycout))
-            UpdateFunction('20170101', '20200303')
+            UpdateFunction('20170101', '20200326')
         except Exception as ex:
             print("ex="+str(ex))
             time.sleep(61)

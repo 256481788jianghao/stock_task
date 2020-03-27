@@ -868,6 +868,91 @@ rzrqye    float    融资融券余额(元)
 def margin_detail(date):
     return pro_api.margin_detail(trade_date = date)
 
+'''------------------------期货---------------------------------'''
+
+'''
+入参：
+exchange    str    Y    交易所代码 CFFEX-中金所 DCE-大商所 CZCE-郑商所 SHFE-上期所 INE-上海国际能源交易中心
+fut_type    str    N    合约类型 (1 普通合约 2主力与连续合约 默认取全部)
+出参：
+ts_code    str    Y    合约代码
+symbol    str    Y    交易标识
+exchange    str    Y    交易市场
+name    str    Y    中文简称
+fut_code    str    Y    合约产品代码
+multiplier    float    Y    合约乘数
+trade_unit    str    Y    交易计量单位
+per_unit    float    Y    交易单位(每手)
+quote_unit    str    Y    报价单位
+quote_unit_desc    str    Y    最小报价单位说明
+d_mode_desc    str    Y    交割方式说明
+list_date    str    Y    上市日期
+delist_date    str    Y    最后交易日期
+d_month    str    Y    交割月份
+last_ddate    str    Y    最后交割日
+trade_time_desc    str    N    交易时间说明
+'''
+def fut_basic(market):
+    return pro_api.fut_basic(exchange=market)
+
+'''
+ts_code    str    Y    TS合约代码
+trade_date    str    Y    交易日期
+pre_close    float    Y    昨收盘价
+pre_settle    float    Y    昨结算价
+open    float    Y    开盘价
+high    float    Y    最高价
+low    float    Y    最低价
+close    float    Y    收盘价
+settle    float    Y    结算价
+change1    float    Y    涨跌1 收盘价-昨结算价
+change2    float    Y    涨跌2 结算价-昨结算价
+vol    float    Y    成交量(手)
+amount    float    Y    成交金额(万元)
+oi    float    Y    持仓量(手)
+oi_chg    float    Y    持仓量变化
+delv_settle    float    N    交割结算价
+'''
+def fut_daily(date):
+    return pro_api.fut_daily(trade_date = date)
+
+'''
+trade_date    str    Y    交易日期
+symbol    str    Y    合约代码或类型
+broker    str    Y    期货公司会员简称
+vol    int    Y    成交量
+vol_chg    int    Y    成交量变化
+long_hld    int    Y    持买仓量
+long_chg    int    Y    持买仓量变化
+short_hld    int    Y    持卖仓量
+short_chg    int    Y    持卖仓量变化
+exchange    str    N    交易所
+'''
+def fut_holding(date):
+    return pro_api.fut_holding(trade_date = date)
+
+'''
+trade_date    str    Y    交易日期
+symbol    str    Y    产品代码
+fut_name    str    Y    产品名称
+warehouse    str    Y    仓库名称
+wh_id    str    N    仓库编号
+pre_vol    int    Y    昨日仓单量
+vol    int    Y    今日仓单量
+vol_chg    int    Y    增减量
+area    str    N    地区
+year    str    N    年度
+grade    str    N    等级
+brand    str    N    品牌
+place    str    N    产地
+pd    int    N    升贴水
+is_ct    str    N    是否折算仓单
+unit    str    Y    单位
+exchange    str    N    交易所
+'''
+def fut_wsr(date):
+    return pro_api.fut_wsr(trade_date = date)
+
 if __name__ == '__main__':
-    data = margin_detail('20190102')
+    data = fut_daily('20190103')
     print(data)
