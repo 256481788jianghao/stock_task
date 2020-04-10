@@ -26,6 +26,21 @@ def read_daily_by_date(con,sdate,edate):
     data = pd.read_sql_query(sql_str,con,index_col='index')
     return data
 
+def read_fut_daily_by_tscode(con,tscode):
+    sql_str = 'select * from fut_daily where ts_code = "'+tscode+'"'
+    data = pd.read_sql_query(sql_str,con,index_col='index')
+    return data
+
+def read_fut_daily_by_symbol(con,symbol):
+    sql_str = 'select * from fut_daily where symbol = "'+symbol+'"'
+    data = pd.read_sql_query(sql_str,con,index_col='index')
+    return data
+
+def read_fut_holding_by_symbol(con,symbol):
+    sql_str = 'select * from fut_holding where symbol = "'+symbol+'"'
+    data = pd.read_sql_query(sql_str,con,index_col='index')
+    return data
+
 def read_concept_info(con):
     sql_str = 'select * from concept_info'
     data = pd.read_sql_query(sql_str,con,index_col='index')
@@ -194,6 +209,16 @@ def read_stock_basic(con):
     sql_str='select * from stock_basic'
     data = pd.read_sql_query(sql_str,con,index_col='index')
     return data
+
+def read_fut_basic(con,name_pix = ''):
+    sql_str='select * from fut_basic'
+    data = pd.read_sql_query(sql_str,con,index_col='index')
+    if type(data) == pd.DataFrame and name_pix != '':
+        def subfun(item):
+            return item.find(name_pix) >= 0;
+        return data[data.name.apply(subfun)]
+    else:
+        return data
 
 def read_stock_basic_by_name(con,name):
     sql_str='select * from stock_basic where name="'+name+'"'
