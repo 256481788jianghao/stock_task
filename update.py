@@ -9,7 +9,10 @@ from _overlapped import NULL
 def StrToDate(str):
     date = datetime.datetime.strptime(str,'%Y%m%d')
     return date
-    
+
+
+concept_detail_list = []
+update_end_concept_detail_id = []    
 def UpdateFunction(start_date,end_date):
     pd.set_option('max_columns', 100)
     
@@ -136,19 +139,24 @@ def UpdateFunction(start_date,end_date):
                 tables_info['stock_company_info_sh'] = [now_date]
             else:
                 print('get stock_company_info_sh faild')
-        
+        global concept_detail_list
+        global update_end_concept_detail_id
         if tables_info['concept_info'].iloc[0] != now_date:
             print('start update concept_info')
             data_concept_info = pt.concept()
             if type(data_concept_info) == pd.DataFrame:
                 data_concept_info.to_sql('concept_info',sql_con,if_exists='replace')
-                concept_detail_list = []
+                
                 concept_detail_list_index = 0
                 for concept_id in data_concept_info.code:
+                    if concept_id in update_end_concept_detail_id:
+                        print("concept_detail id="+str(concept_id)+" update end!")
+                        continue
                     item = pt.concept_detail(concept_id)
                     if type(item) == pd.DataFrame:
                         print("update concept_detail id="+str(concept_id))
                         concept_detail_list.append(item)
+                        update_end_concept_detail_id.append(concept_id)
                     else:
                         print("concept_detail failed id="+str(concept_id))
                     concept_detail_list_index = concept_detail_list_index + 1
@@ -402,7 +410,7 @@ if __name__ == '__main__':
     while loop:
         try:
             print("trycout="+str(trycout))
-            UpdateFunction('20170101', '20200326')
+            UpdateFunction('20170101', '20200409')
         except Exception as ex:
             print("ex="+str(ex))
             time.sleep(61)
